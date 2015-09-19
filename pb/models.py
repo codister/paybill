@@ -1,51 +1,79 @@
 from django.db import models
-
-# Create your models here.
-
-
-
-
+from django.contrib.auth.models import User
+from datetime import datetime
+#######################
+# Models for the PB app
+#######################
 
 
 # Inherting Users to make them Merchents
-# --- One to One Relationship key to connect to django default User Model
-# --- Contact Number
-# --- Landline (Default Null)
-# --- CNIC (File Photo Field)
-# --- Selfi Holding CNIC (Default Null)
-# --- Email Verified Status
-# --- Account Status (string)
-# --- Is Approved by Admin (Default to False)
-# --- IS Blocked by admin (default to false)
-# --- ID number provided by billing company
-#
-
-
-
-
+class Merchent(models.Model):
+	# --- One to One Relationship key to connect to django default User Model
+	user = models.OneToOneField(User)
+	# --- Contact Number
+	contact_num = models.CharField(max_length=128)
+	# --- Landline (Default Null)
+	landline_num = models.CharField(max_length=128)
+	# --- CNIC (File Photo Field)
+	cnic_photo = models.ImageField(upload_to='cnic_images', blank=True)
+	# --- Selfi Holding CNIC (Default Null)
+	cinc_selfi_photo = models.ImageField(upload_to='cnic_selfi_images', blank=True)
+	# --- Email Verified Status
+	isverified_email = models.BooleanField(default=False)
+	# --- Account Status (string)
+	is_account_active = models.BooleanField(default=False)
+	# --- Is Approved by Admin (Default to False)
+	is_admin_approve = models.BooleanField(default=False)
+	# --- IS Blocked by admin (default to false)
+	is_admin_blocked = 	models.BooleanField(default=False)
+	# --- ID number provided by billing company
+	billing_id_number = models.CharField(max_length=128)
+	# --- Balance Earned
+	total_earnings = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 
 
 # Requests Model to Store Requests
-# --- Current time when request was submitted (Timestamp)
-# --- Type (Forign key to Request type Model)
-# --- Bill Payment Companies (Create a New Model Forign KEy)
-# --- Payment form (Default to BTC for now)
-# --- Country Name (String Perhaps create additional Table)
-# --- Ammount Paid in PKR (Float)
-# --- Contact Number (String or Numric we'll see that)
-# --- Bill Indentifier Number (String)
-# --- Payment status isPaid or completed? (Boolean)
-# --- Is Request Processed Status? or Pending (Boolean)
-# --- Requested Completed by Merchent Forign Key
-# --- Is Request Claimed to be Process (True or False)
-# --- Time Remainig to process a request (Default Null)
-# --- Commision to be Taken by Site Admins
-# --- Error / Issue Message
-# --- In response to completion request TXID
-# --- BTC confirmations count [int]
-# --- BTC Wallet on which payment was recived 
-# --- Amount of BTC recived
-# --- Time at Request was Claimed
+class Request(models.Model):
+	# --- Current time when request was submitted (Timestamp)
+	date_time = models.DateTimeField(auto_now=True)
+	# --- Type (Forign key to Request type Model)
+	request_type = models.CharField(max_length=128)
+	# --- Bill Payment Companies (Create a New Model Forign KEy)
+	billing_company = models.CharField(max_length=128)
+	# --- Payment form (Default to BTC for now)
+	payment_method = models.CharField(max_length=128)
+	# --- Country Name (String Perhaps create additional Table)
+	country = models.CharField(max_length=128)
+	# --- amount Paid in PKR (Float)
+	amount_paid =  models.IntegerField(default=0)
+	# --- Contact Number (String or Numric we'll see that)
+	contact_num = models.CharField(max_length=128)
+	# --- Bill Indentifier Number (String)
+	bill_id_num = models.CharField(max_length=128)
+	# --- Payment status isPaid or completed? (Boolean)
+	is_paid = models.BooleanField(default=False)
+	# --- Is Request Processed Status? or Pending (Boolean)
+	is_completed = models.CharField(max_length=128)
+	# --- Requested Completed by Merchent Forign Key
+	completed_by = models.ForeignKey(Merchent)
+	# --- Is Request Claimed to be Process (True or False)
+	isclaimed = models.BooleanField(default=False)
+	# --- Time Remainig to process a request (Default Null)
+	timeremaining = models.TimeField(auto_now=False, auto_now_add=False)
+	# --- Error / Issue Message
+	issue_message = models.TextField(default="No Error or Issue all Clear ")
+	# --- In response to completion request TXID
+	confirmation_id = models.CharField(max_length=200)
+	# --- BTC confirmations count [int]
+	btc_confirmations = models.IntegerField(default=0)
+	# --- BTC Wallet on which payment was received
+	btc_address = models.CharField(max_length=400)
+	# --- Amount of BTC recived
+	btc_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
+	# --- Time at Request was Claimed
+	claiming_time = models.TimeField(auto_now=False, auto_now_add=False)
+	# --- Exchange rate from PKR to BTC
+	exchange_rate = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 
 
 
@@ -53,15 +81,18 @@ from django.db import models
 
 # Payments to User Model to store payments for users 
 # One to many relationship to User Merchent Model
-# --- Timestamp when payment is created
-# --- The merchent to whom the payment belongs (ONE TO many to Merchents)
-# --- Payment Status (Error, Pending, onHold, Paid )
-# --- Payment Ammount
-# --- Paid via (BTC or Cash)
-# --- Error Message
+class Payment(models.Model):
+	# --- Timestamp when payment is created
+	date_time = models.DateTimeField(auto_now=True)
+	# --- The merchent to whom the payment belongs (ONE TO many to Merchents)
+	merchent = models.ForeignKey(Merchent)
+	# --- Payment Status (Error, Pending, onHold, Paid )
+	payment_status = models.CharField(max_length=128)
+	# --- Payment amount
+	payment_amount = models.IntegerField(default=0)
+	# --- Paid via (BTC or Cash)
+	payment_method = models.CharField(max_length=128)
+	# --- Error Message
+	error_message = models.TextField(default="Payment Authorized No Error Messages")
 
 
-
-
-
-# Request type one to one relationship to Request Model
