@@ -9,7 +9,7 @@ from datetime import datetime
 # Inherting Users to make them Merchents
 class Merchent(models.Model):
 	# --- One to One Relationship key to connect to django default User Model
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	# --- Contact Number
 	contact_num = models.CharField(max_length=128)
 	# --- Landline (Default Null)
@@ -53,7 +53,7 @@ class Request(models.Model):
 	# --- Payment status isPaid or completed? (Boolean)
 	is_paid = models.BooleanField(default=False)
 	# --- Is Request Processed Status? or Pending (Boolean)
-	is_completed = models.CharField(max_length=128)
+	is_completed = models.BooleanField(default=False)
 	# --- Requested Completed by Merchent Forign Key
 	completed_by = models.ForeignKey(Merchent)
 	# --- Is Request Claimed to be Process (True or False)
@@ -63,7 +63,7 @@ class Request(models.Model):
 	# --- Error / Issue Message
 	issue_message = models.TextField(default="No Error or Issue all Clear ")
 	# --- In response to completion request TXID
-	confirmation_id = models.CharField(max_length=200)
+	confirmation_id = models.CharField(max_length=200, default=False)
 	# --- BTC confirmations count [int]
 	btc_confirmations = models.IntegerField(default=0)
 	# --- BTC Wallet on which payment was received

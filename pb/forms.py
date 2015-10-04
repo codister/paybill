@@ -15,4 +15,4 @@ class UserForm(forms.ModelForm):
 class MerchentForm(forms.ModelForm):
     class Meta:
         model = Merchent
-        fields = ('contact_num', 'cnic_photo')
+        fields = ('contact_num', 'cnic_photo', 'cinc_selfi_photo', 'billing_id_number')

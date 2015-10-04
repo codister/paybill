@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 from pb import views
+# from pb.views import some class base views
 from django.conf import settings
 
 
@@ -7,7 +8,9 @@ urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
         url(r'^register/$', views.register, name='register'),
         url(r'^login/$', views.login_user, name='login_user'),
-        url(r'^settings/$', views.settings, name='settings'),)
+        url(r'request/(?P<request_id>[0-9]+)/$', views.get_request, name='get_request'),
+        url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),
+        url(r'^logout/$', views.user_logout, name='logout'),)
 if settings.DEBUG:
     urlpatterns += patterns(
         'django.views.static',
