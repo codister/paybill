@@ -10,6 +10,7 @@ import json
 
 
 def index(request):
+    # Just return the Landing page template back to the user!
     return render(request, "index.html")
 
 
