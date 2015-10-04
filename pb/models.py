@@ -74,6 +74,8 @@ class Request(models.Model):
 	claiming_time = models.TimeField(auto_now=False, auto_now_add=False)
 	# --- Exchange rate from PKR to BTC
 	exchange_rate = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
+	# --- Email assoicated with the request to send out Automated email
+	email_address = models.CharField(max_length=100)
 
 
 
