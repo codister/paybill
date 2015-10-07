@@ -56,6 +56,8 @@ class Request(models.Model):
 	is_completed = models.BooleanField(default=False)
 	# --- Requested Completed by Merchent Forign Key
 	completed_by = models.ForeignKey(Merchent)
+	# --- User who have claimed the request to complete it
+	claimed_by = models.ForeignKey(Merchent)
 	# --- Is Request Claimed to be Process (True or False)
 	isclaimed = models.BooleanField(default=False)
 	# --- Time Remainig to process a request (Default Null)
@@ -75,8 +77,9 @@ class Request(models.Model):
 	# --- Exchange rate from PKR to BTC
 	exchange_rate = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 	# --- Email assoicated with the request to send out Automated email
-	email_address = models.CharField(max_length=100)
-
+	email_address = models.CharField(max_length=100, blank=True)
+	# --- if we have more then 6 confirmations then we mark this transaction completed
+	payment_completed = models.BooleanField(default=False)
 
 
 

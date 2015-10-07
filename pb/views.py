@@ -6,7 +6,7 @@ from pb.models import Merchent, Request, Payment
 from pb.forms import UserForm, MerchentForm
 from django.shortcuts import render, get_object_or_404
 
-import json
+import json, time, requests
 
 
 def index(request):
@@ -196,6 +196,100 @@ def submit_request_data(request):
         country     = request.POST.get('country')
         contact_num = request.POST.get('contact_num')
         billing_company = request.POST.get('billing_company')
-
+        email_address = request.POST.get('email_address')
+        # .. Generate the bitfinex address and return to the user
+        # .... Create a function call and it'll give you the new address form bitfinx
+        # .. Get the Exchange rate from 
+        # .... Make a get request to https://api.blinktrade.com/api/v1/PKR/ticker
+        # .... Convert it to a dict
+        # .... Access and store the variable ( exchange rate )
+        # .. Calculatewhat need to 
+        # .. Save the details to database
+        # .. Return a message that data has been saved in Json Format
     else:
         return HttpResponse('Get request is not supported here!')
+
+
+# --- View for check how much confirmation have been made in there --- #
+def is_request_paid(request, request_id, btc_address):
+    # .. Call the function btc_tranx_detail
+    # .. Access the balance on this address 
+    # .. if address have balance > 0 and is = to ammount to bill to be paid
+    # ... Mark the item as paid in DB field so we can keep track of it
+    # ... Return payment has been made in Json
+    # .. else we did not got the payment return error message with no payment made yet
+    # ... returm error no payment made yet (json)
+
+
+
+# --- We want to make sure if we the request have 
+def is_payment_completed(request, request_id):
+    # Call the function btc_tranx_detail which returning DICT
+    # Get the BTC address from Request model with request ID
+    # check if payment_completed is not set to true
+    # Access the confirmations field value with BTC address
+    # now we need to check the confirmations
+    # Get the confirmations if it's great then 6 then we marke it full safe
+    # Mark the item payment_completed to true in DB field & return good message
+    # if it's not else return error message not yet completed
+
+
+
+
+
+############################
+# --- Helper Functions --- #
+############################
+
+
+
+# --- Get the BTC TRANSACTION details with BTC address --- #
+def btc_tranx_detail(btc_address):
+    # http://api.blockcypher.com/v1/btc/main/addrs/3HcGoxru2msKRcmpktDNSrAgNCB9B7Zu4V
+    # http://api.blockcypher.com/v1/btc/main/addrs/ ADDRESS
+    # Make a get request to the URL with Dynamic Address
+    # Convert the respone to dictionary
+    # return the DICT
+
+# --- Generate a new address for making payments from bitfinex --- #
+def gen_deposit_address():
+    # Import specific to this function
+    import hmac
+    import base64
+    import hashlib
+    
+    # Starting the main Function
+    DEPOSIT_API_URL = 'https://api.bitfinex.com/v1' # This has to be change wrt API endpoint! 
+    bitfinexKey = ''
+    bitfinexSecret = b'' #the b is deliberate, encodes to bytes
+
+    payloadObject = {
+            'request':'/v1/deposit/new',
+            'nonce':str(time.time() * 1000000), #convert to string
+            'method':'bitcoin',
+            'wallet_name':'deposit',
+            'renew':0
+    }
+
+    payload_json = json.dumps(payloadObject)
+
+    payload = base64.b64encode(bytes(payload_json, "utf-8"))
+
+    m = hmac.new(bitfinexSecret, payload, hashlib.sha384)
+    m = m.hexdigest()
+
+    #headers for POST request
+    headers = {
+          'X-BFX-APIKEY' : bitfinexKey,
+          'X-BFX-PAYLOAD' : payload,
+          'X-BFX-SIGNATURE' : m
+    }
+
+    # Make the call to API and get the results back
+    r = requests.get(DEPOSIT_API_URL, data={}, headers=headers)
+
+    # Conver the response to DIC by acessing the path .content
+    # response_date = content.convert to dict from JSON
+
+    # Access the given newly address and save it in a var 
+    # return it from the function
