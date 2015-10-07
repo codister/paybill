@@ -292,4 +292,4 @@ def gen_deposit_address():
     # response_date = content.convert to dict from JSON
 
     # Access the given newly address and save it in a var 
-    # return it from the function
+    # return the newly generated address 
