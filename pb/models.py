@@ -41,11 +41,11 @@ class Request(models.Model):
 	# --- Bill Payment Companies (Create a New Model Forign KEy)
 	billing_company = models.CharField(max_length=128)
 	# --- Payment form (Default to BTC for now)
-	payment_method = models.CharField(max_length=128)
+	payment_method = models.CharField(max_length=128, default="BTC")
 	# --- Country Name (String Perhaps create additional Table)
 	country = models.CharField(max_length=128)
-	# --- amount Paid in PKR (Float)
-	amount_paid =  models.IntegerField(default=0)
+	# --- Due Bill amount in PKR (Float)
+	pkr_bill_amount = models.DecimalField(max_digits=8, decimal_places=2)
 	# --- Contact Number (String or Numric we'll see that)
 	contact_num = models.CharField(max_length=128)
 	# --- Bill Indentifier Number (String)
@@ -74,8 +74,6 @@ class Request(models.Model):
 	btc_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 	# --- Time at Request was Claimed
 	claiming_time = models.TimeField(auto_now=False, auto_now_add=False)
-	# --- Exchange rate from PKR to BTC
-	exchange_rate = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 	# --- Email assoicated with the request to send out Automated email
 	email_address = models.CharField(max_length=100, blank=True)
 	# --- if we have more then 6 confirmations then we mark this transaction completed

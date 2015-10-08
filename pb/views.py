@@ -43,6 +43,7 @@ def login_user(request):
         # If None (Python's way of representing the absence of a value), no user
         # with matching credentials was found.
         if user:
+
             # Is the account active? It could have been disabled.
             if user.is_active:
                 # If the account is valid and active, we can log the user in.
@@ -123,8 +124,10 @@ def register(request):
 # Getting the User Logged out of the System
 @login_required
 def user_logout(request):
+
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
+    
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
 
@@ -167,9 +170,12 @@ def user_logout(request):
 def get_request(request, request_id):
     # .. Get the record by request ID
     req = get_object_or_404(Request, pk=request_id)
+    
     # .. Get the Status of request
     if req.is_completed:
+
         jsonrecord = json.dump(req)
+        
         # .. Code it to Json and return
         return HttpResponse(jsonrecord)
 
@@ -191,27 +197,51 @@ def submit_request_data(request):
     # .. Validate if we support such service
 
     if request.method == 'POST':
+
         billamount  = request.POST.get('billamount')
         requesttype = request.POST.get('requesttype')
         country     = request.POST.get('country')
         contact_num = request.POST.get('contact_num')
         billing_company = request.POST.get('billing_company')
         email_address = request.POST.get('email_address')
-        # .. Generate the bitfinex address and return to the user
-        # .... Create a function call and it'll give you the new address form bitfinx
-        # .. Get the Exchange rate from 
-        # .... Make a get request to https://api.blinktrade.com/api/v1/PKR/ticker
-        # .... Convert it to a dict
-        # .... Access and store the variable ( exchange rate )
-        # .. Calculatewhat need to 
-        # .. Save the details to database
-        # .. Return a message that data has been saved in Json Format
+
+        # Generate the bitfinex address and return to the user
+        newly_generated_address = gen_deposit_address()
+        
+        # Convert from PKR to BTC on the fly!
+        btc_amount_to_paid = exhange_pkr_to_btc(billamount)
+        
+        # Save the details to database
+        yoorequest = Request.create( 
+            
+            pkr_bill_amount=billamount, 
+            requesttype=requesttype, 
+            country=country, 
+            contact_num=contact_num, 
+            billing_company=billing_company, 
+            email_address=email_address, 
+            btc_address=newly_generated_address,
+            btc_amount=btc_amount_to_paid
+
+            )
+
+        # Encode the DICT to Json
+        response = {
+
+            "amountdue" : btc_amount_to_paid,
+            "baddress"  : newly_generated_address
+
+        }
+
+        # Return a message that data has been saved in Json Format
+        return HttpResponse(json.dumps(response))
     else:
-        return HttpResponse('Get request is not supported here!')
+        # Do a redirect we don't have Post Request Comming!
+        return HttpResponseRedirect("/404")
 
 
 # --- View for check how much confirmation have been made in there --- #
-def is_request_paid(request, request_id, btc_address):
+def is_request_paid(request, request_id):
     # .. Call the function btc_tranx_detail
     # .. Access the balance on this address 
     # .. if address have balance > 0 and is = to ammount to bill to be paid
@@ -242,54 +272,68 @@ def is_payment_completed(request, request_id):
 ############################
 
 
+def exhange_pkr_to_btc(amount):
+    # First of all get the exhange rate
+    
+    # Make a get request to https://api.blinktrade.com/api/v1/PKR/ticker
+    data = requests.get("https://api.blinktrade.com/api/v1/PKR/ticker").json()
+    
+    # Access and store the variable ( exchange rate )
+    pkr_exhange_rate = data["buy"]
+    
+    # Convert the PKR amount to BTC
+    return amount / pkr_exhange_rate
+
+
+
+
 
 # --- Get the BTC TRANSACTION details with BTC address --- #
 def btc_tranx_detail(btc_address):
     # http://api.blockcypher.com/v1/btc/main/addrs/3HcGoxru2msKRcmpktDNSrAgNCB9B7Zu4V
-    # http://api.blockcypher.com/v1/btc/main/addrs/ ADDRESS
     # Make a get request to the URL with Dynamic Address
-    # Convert the respone to dictionary
+    trx_details = requests.get( "http://api.blockcypher.com/v1/btc/main/addrs/" + btc_address ).json()
+    
     # return the DICT
+    return trx_details
+
+
+
+
 
 # --- Generate a new address for making payments from bitfinex --- #
 def gen_deposit_address():
     # Import specific to this function
-    import hmac
     import base64
     import hashlib
-    
-    # Starting the main Function
-    DEPOSIT_API_URL = 'https://api.bitfinex.com/v1' # This has to be change wrt API endpoint! 
-    bitfinexKey = ''
-    bitfinexSecret = b'' #the b is deliberate, encodes to bytes
+    import hmac
+
+    # Main Function begins
+    bitfinexURL = 'https://api.bitfinex.com/v1/deposit/new'
+    bitfinexKey = 'J4HZgO4DWeKDV9el4NcGcuHPRsOXzOSpGhczVyzpBSM'
+    bitfinexSecret = b'C9Jl818rNbUUzoOKAsoEYIBUdy8kBQLM0uRmZLAP1zL' #the b is deliberate, encodes to bytes
 
     payloadObject = {
             'request':'/v1/deposit/new',
-            'nonce':str(time.time() * 1000000), #convert to string
+            'nonce':str(time.time() * 100000), #convert to string
             'method':'bitcoin',
             'wallet_name':'deposit',
-            'renew':0
+            'renew':1
     }
-
+    # Preparing the payload data
     payload_json = json.dumps(payloadObject)
-
     payload = base64.b64encode(bytes(payload_json, "utf-8"))
 
     m = hmac.new(bitfinexSecret, payload, hashlib.sha384)
     m = m.hexdigest()
 
-    #headers for POST request
+    #headers
     headers = {
           'X-BFX-APIKEY' : bitfinexKey,
-          'X-BFX-PAYLOAD' : payload,
+          'X-BFX-PAYLOAD' : base64.b64encode(bytes(payload_json, "utf-8")),
           'X-BFX-SIGNATURE' : m
     }
 
-    # Make the call to API and get the results back
-    r = requests.get(DEPOSIT_API_URL, data={}, headers=headers)
-
-    # Conver the response to DIC by acessing the path .content
-    # response_date = content.convert to dict from JSON
-
-    # Access the given newly address and save it in a var 
-    # return the newly generated address 
+    r = requests.get(bitfinexURL, data={}, headers=headers)
+    bit_data = r.json()
+    return bit_data['address']['address']
