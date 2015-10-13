@@ -34,24 +34,21 @@
 			</ul>
 			</br>
 			</br>
-			<a class="btn btn-rounded btn-noborder btn-lg btn-primary" href="frontend_pricing.html">Purchase Today</a>
+			<a class="btn btn-rounded btn-noborder btn-lg btn-primary" href="/">Track your Transfer</a>
 		</div>
 
 
 		<div class="col-lg-6">
 			<!-- Validation Wizard (.js-wizard-validation class is initialized in js/pages/base_forms_wizard.js) -->
 			<!-- For more examples you can check out http://vadimg.com/twitter-bootstrap-wizard-example/ -->
-			<div class="js-wizard-validation block">
+			<div class="js-wizard-validation block animated block-link-hover2 zoomInUp">
 				<!-- Step Tabs -->
 				<ul class="nav nav-tabs nav-tabs-alt nav-justified">
 					<li class="active">
-						<a class="inactive" href="#validation-step1" data-toggle="tab">1. Personal</a>
+						<a class="inactive" href="#validation-step1" data-toggle="tab">1. Information</a>
 					</li>
 					<li>
-						<a class="inactive" href="#validation-step2" data-toggle="tab">2. Details</a>
-					</li>
-					<li>
-						<a class="inactive" href="#validation-step3" data-toggle="tab">3. Extra</a>
+						<a class="inactive" href="#validation-step2" data-toggle="tab">2. Bill Details</a>
 					</li>
 				</ul>
 				<!-- END Step Tabs -->
@@ -65,15 +62,20 @@
 						<!-- Step 1 -->
 						<div class="tab-pane fade fade-right in push-30-t push-50 active" id="validation-step1">
 							<div class="form-group">
-
 								<div class="col-sm-8 col-sm-offset-2">
 									<div class="form-material">
 
 
 
 
-										<input class="form-control" type="text" id="validation-firstname" name="validation-firstname" placeholder="Please enter your firstname">
-										<label for="validation-firstname">First Name</label>
+										<select class="form-control" id="validation-bill_type" name="validation-bill_type" size="1">
+										<option value="0">Select a Bill Type </option>
+										<option value="internet">Electricity</option>
+										<option value="2">Internet Broadband</option>
+										<option value="3">Gas</option>
+										<option value="4">Mobile Recharge</option>
+										</select>
+										<label for="validation-bill_type">Bill Type</label>
 
 
 
@@ -84,16 +86,17 @@
 
 
 
-							<div class="form-group">
-
+							<div id="billing_company" class="form-group ">
 								<div class="col-sm-8 col-sm-offset-2">
 									<div class="form-material">
 
 
 
 
-										<input class="form-control" type="text" id="validation-lastname" name="validation-lastname" placeholder="Please enter your lastname">
-										<label for="validation-lastname">Last Name</label>
+										<select class="form-control" id="validation-billing_company" name="validation-billing_company" size="1">
+										<option value="None">Select a Bill Type First </option>
+										</select>
+										<label for="validation-billing_company">Billing Company</label>
 
 
 
@@ -101,6 +104,9 @@
 									</div>
 								</div>
 							</div>
+
+
+
 
 
 
@@ -121,93 +127,125 @@
 									</div>
 								</div>
 							</div>
+
+
+
+
+
+
+							<div class="form-group">
+                                <div class="col-md-8 col-sm-offset-2">
+
+                                    <div class="form-material">
+                                        <input class="js-datepicker form-control" type="text" id="validation-date" name="validation-date" data-date-format="mm/dd/yy" placeholder="mm/dd/yy">
+                                        <label for="validation-date">Choose a date</label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
 						</div>
 						<!-- END Step 1 -->
 
 
 						<!-- Step 2 -->
 						<div class="tab-pane fade fade-right push-30-t push-50" id="validation-step2">
-							<div class="form-group">
-
-								<div class="col-sm-8 col-sm-offset-2">
-									<div class="form-material">
+							
 
 
+							<div id="final-payment">
+
+								<div id="removefinal">
+
+									<div class="form-group">
+										<div class="col-sm-8 col-sm-offset-2">
+											<div class="form-material">
 
 
-										<textarea class="form-control" id="validation-details" name="validation-details" rows="9" placeholder="Share something about yourself"></textarea>
-										<label for="validation-details">Details</label>
+
+
+												<input class="form-control" type="text" id="validation-billidnumber" name="validation-billidnumber" placeholder="Enter Billing ID / Consumer Number">
+												<label for="validation-billidnumber">Billing ID</label>
+
+
+
+
+											</div>
+										</div>
+									</div>
+
+
+
+
+									<div class="form-group">
+										<div class="col-sm-8 col-sm-offset-2">
+											<div class="form-material">
+
+
+
+
+												<input class="form-control" type="text" id="validation-billamount" name="validation-billamount" placeholder="Amount to be paid exactly as shown on your bill">
+												<label for="validation-billamount">Bill Amount</label>
+
+
+
+
+											</div>
+										</div>
+									</div>
+
+
+
+
+
+									<div class="form-group">
+										<div class="col-sm-8 col-sm-offset-2">
+											<div class="form-material">
+
+
+
+
+												<input class="form-control" type="text" id="validation-contact_num" name="validation-contact_num" placeholder="Contact Number to get the Confirmation Message / Call">
+												<label for="validation-contact_num">Contact Number</label>
+
+
+
+
+											</div>
+										</div>
+									</div>
+
+
+
+
+
+
+
 									
 
+									<div class="form-group">
+										<div class="col-sm-8 col-sm-offset-2">
 
 
+
+											<label class="css-input switch switch-sm switch-primary" for="validation-check">
+											<input type="checkbox" id="validation-check" name="validation-check"><span></span> Agree with the <a data-toggle="modal" data-target="#modal-check" href="#">terms</a>
+											</label>
+										
+
+
+
+										</div>
 									</div>
 								</div>
 							</div>
+
+
+
 						</div>
 						<!-- END Step 2 -->
 
-						<!-- Step 3 -->
-						<div class="tab-pane fade fade-right push-30-t push-50" id="validation-step3">
-							
-							<div class="form-group">
-								<div class="col-sm-8 col-sm-offset-2">
-									<div class="form-material">
-
-
-
-
-										<input class="form-control" type="text" id="validation-city" name="validation-city" placeholder="Where do you live?">
-										<label for="validation-city">City</label>
-
-
-
-
-									</div>
-								</div>
-							</div>
-
-
-							<div class="form-group">
-								<div class="col-sm-8 col-sm-offset-2">
-									<div class="form-material">
-
-
-
-
-										<select class="form-control" id="validation-skills" name="validation-skills" size="1">
-										<option value="">Please select your best skill</option>
-										<option value="1">Photoshop</option>
-										<option value="2">HTML</option>
-										<option value="3">CSS</option>
-										<option value="4">JavaScript</option>
-										</select>
-										<label for="validation-skills">Skills</label>
-
-
-
-
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-8 col-sm-offset-2">
-
-
-
-
-
-									<label class="css-input switch switch-sm switch-primary" for="validation-terms">
-									<input type="checkbox" id="validation-terms" name="validation-terms"><span></span> Agree with the <a data-toggle="modal" data-target="#modal-terms" href="#">terms</a>
-									</label>
-								
-
-
-
-								</div>
-							</div>
-						</div>
-						<!-- END Step 3 -->
 					</div>
 					<!-- END Steps Content -->
 
@@ -224,12 +262,12 @@
 							<div class="col-xs-6 text-right">
 
 
-								<button class="wizard-next btn btn-success" type="button">Next <i class="fa fa-arrow-circle-o-right"></i></button>
+								<button class="wizard-next btn btn-primary" type="button">Next <i class="fa fa-arrow-circle-o-right"></i></button>
 
 
 								<!-- Submit Request Button -->
 
-								<button class="wizard-finish btn btn-primary" type="submit"><i class="fa fa-check-circle-o"></i> Submit</button>
+								<button class="wizard-finish btn btn-success" type="submit"><i class="fa fa-check-circle-o"></i> Submit</button>
 
 
 

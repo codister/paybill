@@ -42,6 +42,47 @@ var BaseFormWizard = function() {
         });
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Init wizards with validation, for more examples you can check out http://vadimg.com/twitter-bootstrap-wizard-example/
     var initWizardValidation = function(){
         // Get forms
@@ -116,6 +157,11 @@ var BaseFormWizard = function() {
             }
         });
 
+
+
+
+
+
         // Init form validation on the other wizard form
         var $validator2 = $form2.validate({
             errorClass: 'help-block text-right animated fadeInDown',
@@ -173,6 +219,16 @@ var BaseFormWizard = function() {
                 'validation-terms': 'You must agree to the service terms!'
             }
         });
+
+
+
+
+
+
+
+
+
+
 
         // Init classic wizard with validation
         jQuery('.js-wizard-classic-validation').bootstrapWizard({

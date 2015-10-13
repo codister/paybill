@@ -198,6 +198,14 @@
         <script src="{% static "assets/js/plugins/jquery-validation/jquery.validate.min.js" %}"></script>
 
         <!-- Page JS Code -->
-        <script src="{% static "assets/js/base_forms_wizard.js" %}"></script>
+        <script src="{% static "assets/js/form_validations.js" %}"></script>
+        <script src="{% static "assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js" %}"></script>
+
+        <script>
+            $(function () {
+                // Init page helpers (BS Datepicker + BS Colorpicker + Select2 + Masked Input + Tags Inputs plugins)
+                App.initHelpers(['datepicker']);
+            });
+        </script>
     </body>
 </html>

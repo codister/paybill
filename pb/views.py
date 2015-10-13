@@ -2,9 +2,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from pb.models import Merchent, Request, Payment
+from pb.models import Merchent, Request, Payment, Company
 from pb.forms import UserForm, MerchentForm
 from django.shortcuts import render, get_object_or_404
+from django.core import serializers
 
 import json, time, requests
 
@@ -270,7 +271,7 @@ def submit_request_data(request):
             email_address=email_address, 
             btc_address=newly_generated_address,
             btc_amount=btc_amount_to_paid
-            
+
             )
 
         # Encode the DICT to Json
@@ -310,6 +311,16 @@ def submit_request_data(request):
 #     # Get the confirmations if it's great then 6 then we marke it full safe
 #     # Mark the item payment_completed to true in DB field & return good message
 #     # if it's not else return error message not yet completed
+
+
+
+
+def get_companies(request, bill_type):
+
+    companies = Company.objects.all().filter(bill_type=bill_type)
+    data = serializers.serialize("json", companies)
+    return HttpResponse (data)
+
 
 
 

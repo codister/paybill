@@ -9,7 +9,13 @@ urlpatterns = patterns('',
         url(r'^register/$', views.register, name='register'),
         url(r'^login/$', views.login_user, name='login_user'),
         url(r'request/(?P<request_id>[0-9]+)/$', views.get_request, name='get_request'),
+        
+        # Ajax
         url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),
+
+        url(r'getcompanies/(?P<bill_type>[-\w]+)/$', views.get_companies, name='get_companies'),
+
+
         url(r'^logout/$', views.user_logout, name='logout'),)
 if settings.DEBUG:
     urlpatterns += patterns(

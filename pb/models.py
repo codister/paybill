@@ -99,3 +99,13 @@ class Payment(models.Model):
 	error_message = models.TextField(default="Payment Authorized No Error Messages")
 
 
+class Company(models.Model):
+	# --- Name of the company
+	name = models.CharField(max_length=128)
+	# --- Supported Bill type
+	bill_type = models.CharField(max_length=128)
+	# --- Country in Operating
+	country = models.CharField(max_length=128)
+
+	def __str__(self):
+		return self.name
