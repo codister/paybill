@@ -1,11 +1,357 @@
+{% extends 'layout.html' %}
+
+
 {% load staticfiles%}
-<html>
-<head>
-	<title>Homepage of Paybill.io</title>
-</head>
-<body>
-<p>it's just a Homepage to have links to other pages</p>
-        <a href="/login/">About</a><br />
-        <img src="{% static "images/fun.jpg" %}" alt="Picture of Testing Server`" /> <!-- New line -->
-</body>
-</html>
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+	<section class="content content-full content-boxed overflow-hidden">
+
+	<!-- Section Content -->
+	<div class="push-100-t push-50">
+		<div class="col-lg-6">
+			<h1 class="h1 text-white push-10">Paybill.io</h1>
+			<h2 class="h5 text-white-op">Powerful, flexible and reliable UI framework that just works. Your valuable feedback made it happen.</h2>
+			</br>
+			</br>
+			<ul class="text-white fa-ul">
+			<li><i class="fa fa-check fa-li"></i>Bitcoin Payments</li>
+			<li><i class="fa fa-check fa-li"></i>Pay all sort of Bills</li>
+			<li>
+			<i class="fa fa-check fa-li"></i>Billing Companies
+			<ul class="fa-ul">
+			<li><i class="fa fa-angle-right fa-li"></i>All Mobile Networks</li>
+			<li><i class="fa fa-angle-right fa-li"></i>PTCL, GEPCO, K-Electric</li>
+			<li><i class="fa fa-angle-right fa-li"></i>Wateen, WiTribe, Gas</li>
+			</ul>
+			</li>
+			<li><i class="fa fa-check fa-li"></i>Mobile Reloads</li>
+			</ul>
+			</br>
+			</br>
+			<a class="btn btn-rounded btn-noborder btn-lg btn-primary" href="frontend_pricing.html">Purchase Today</a>
+		</div>
+
+
+		<div class="col-lg-6">
+			<!-- Validation Wizard (.js-wizard-validation class is initialized in js/pages/base_forms_wizard.js) -->
+			<!-- For more examples you can check out http://vadimg.com/twitter-bootstrap-wizard-example/ -->
+			<div class="js-wizard-validation block">
+				<!-- Step Tabs -->
+				<ul class="nav nav-tabs nav-tabs-alt nav-justified">
+					<li class="active">
+						<a class="inactive" href="#validation-step1" data-toggle="tab">1. Personal</a>
+					</li>
+					<li>
+						<a class="inactive" href="#validation-step2" data-toggle="tab">2. Details</a>
+					</li>
+					<li>
+						<a class="inactive" href="#validation-step3" data-toggle="tab">3. Extra</a>
+					</li>
+				</ul>
+				<!-- END Step Tabs -->
+
+				<!-- Form -->
+				<!-- jQuery Validation (.js-form2 class is initialized in js/pages/base_forms_wizard.js) -->
+				<!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
+				<form class="js-form2 form-horizontal" action="base_forms_wizard.html" method="post">
+					<!-- Steps Content -->
+					<div class="block-content tab-content">
+						<!-- Step 1 -->
+						<div class="tab-pane fade fade-right in push-30-t push-50 active" id="validation-step1">
+							<div class="form-group">
+
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<input class="form-control" type="text" id="validation-firstname" name="validation-firstname" placeholder="Please enter your firstname">
+										<label for="validation-firstname">First Name</label>
+
+
+
+
+									</div>
+								</div>
+							</div>
+
+
+
+							<div class="form-group">
+
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<input class="form-control" type="text" id="validation-lastname" name="validation-lastname" placeholder="Please enter your lastname">
+										<label for="validation-lastname">Last Name</label>
+
+
+
+
+									</div>
+								</div>
+							</div>
+
+
+
+							<div class="form-group">
+
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<input class="form-control" type="email" id="validation-email" name="validation-email" placeholder="Please enter your email">
+										<label for="validation-email">Email</label>
+
+
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END Step 1 -->
+
+
+						<!-- Step 2 -->
+						<div class="tab-pane fade fade-right push-30-t push-50" id="validation-step2">
+							<div class="form-group">
+
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<textarea class="form-control" id="validation-details" name="validation-details" rows="9" placeholder="Share something about yourself"></textarea>
+										<label for="validation-details">Details</label>
+									
+
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END Step 2 -->
+
+						<!-- Step 3 -->
+						<div class="tab-pane fade fade-right push-30-t push-50" id="validation-step3">
+							
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<input class="form-control" type="text" id="validation-city" name="validation-city" placeholder="Where do you live?">
+										<label for="validation-city">City</label>
+
+
+
+
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-2">
+									<div class="form-material">
+
+
+
+
+										<select class="form-control" id="validation-skills" name="validation-skills" size="1">
+										<option value="">Please select your best skill</option>
+										<option value="1">Photoshop</option>
+										<option value="2">HTML</option>
+										<option value="3">CSS</option>
+										<option value="4">JavaScript</option>
+										</select>
+										<label for="validation-skills">Skills</label>
+
+
+
+
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-2">
+
+
+
+
+
+									<label class="css-input switch switch-sm switch-primary" for="validation-terms">
+									<input type="checkbox" id="validation-terms" name="validation-terms"><span></span> Agree with the <a data-toggle="modal" data-target="#modal-terms" href="#">terms</a>
+									</label>
+								
+
+
+
+								</div>
+							</div>
+						</div>
+						<!-- END Step 3 -->
+					</div>
+					<!-- END Steps Content -->
+
+					<!-- Steps Navigation -->
+					<div class="block-content block-content-mini block-content-full border-t">
+						<div class="row">
+							<div class="col-xs-6">
+
+
+								<button class="wizard-prev btn btn-warning" type="button"><i class="fa fa-arrow-circle-o-left"></i> Previous</button>
+
+
+							</div>
+							<div class="col-xs-6 text-right">
+
+
+								<button class="wizard-next btn btn-success" type="button">Next <i class="fa fa-arrow-circle-o-right"></i></button>
+
+
+								<!-- Submit Request Button -->
+
+								<button class="wizard-finish btn btn-primary" type="submit"><i class="fa fa-check-circle-o"></i> Submit</button>
+
+
+
+							</div>
+						</div>
+					</div>
+				<!-- END Steps Navigation -->
+				</form>
+				<!-- END Form -->
+			</div>
+			<!-- END Validation Wizard Wizard -->
+		</div>
+	</div>
+	<!-- END Section Content -->
+	</section>
+</div>
+<!-- END Hero Content -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Classic Features #2 -->
+<div class="bg-white">
+    <section class="content content-boxed">
+        <!-- Section Content -->
+        <div class="row items-push-3x push-50-t nice-copy">
+            <div class="col-sm-4">
+                <div class="text-center push-30">
+                    <span class="item item-2x item-circle border">
+                        <i class="si si-compass"></i>
+                    </span>
+                </div>
+                <h3 class="h5 font-w600 text-uppercase text-center push-10">Cross Browser Support</h3>
+                <p>OneUI will play nice with all modern browsers such as Chrome, Firefox, Safari, Opera and the latest versions of Internet Explorer (9 and up).</p>
+            </div>
+            <div class="col-sm-4">
+                <div class="text-center push">
+                    <span class="item item-2x item-circle border">
+                        <i class="si si-book-open"></i>
+                    </span>
+                </div>
+                <h3 class="h5 font-w600 text-uppercase text-center push-10">Documentation</h3>
+                <p>OneUI comes packed with a great documentation which covers all the basics to get you familiar with template’s structure and files. It is the best way to get started.</p>
+            </div>
+            <div class="col-sm-4">
+                <div class="text-center push">
+                    <span class="item item-2x item-circle border">
+                        <i class="si si-rocket"></i>
+                    </span>
+                </div>
+                <h3 class="h5 font-w600 text-uppercase text-center push-10">Clean &amp; Commented Code</h3>
+                <p>The code is created with the developer in mind. It is clean, easy to follow, easy to replicate and at the same time well commented, so that you never feel lost.</p>
+            </div>
+        </div>
+        <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Classic Features #2 -->
+
+
+
+
+<!-- Get Started -->
+<div class="bg-gray-lighter">
+    <section class="content content-full content-boxed">
+        <!-- Section Content -->
+        <div class="push-20-t push-20 text-center">
+            <h3 class="h4 push-20 visibility-hidden" data-toggle="appear">Clean design in one powerful package. It was made for your next awesome project.</h3>
+            <a class="btn btn-rounded btn-noborder btn-lg btn-success visibility-hidden" data-toggle="appear" data-class="animated bounceIn" href="frontend_pricing.html">Get Started Today</a>
+        </div>
+        <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Get Started -->
+
+
+
+
+{% endblock %}
+
+

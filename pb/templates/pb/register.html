@@ -1,32 +1,304 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Rango</title>
-    </head>
+{% extends 'layout.html' %}
 
-    <body>
-        <h1>Register with Paybill</h1>
+{% block title %} Merchent  Login {% endblock %}
+
+{% block content %}
+
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+    <section class="content content-full content-boxed overflow-hidden">
+    <!-- Section Content -->
+        <div class="push-100-t push-50 text-center">
+            <h1 class="h2 text-white push-10">Merchent Sign Up.</h1>
+            <h2 class="h5 text-white-op">Process Bills, Get Paid, Grow like never before let's get you register first</h2>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Hero Content -->
+
+
+
 
         {% if registered %}
         Rango says: <strong>thank you for registering!</strong>
         <a href="/">Return to the homepage.</a><br />
         {% else %}
-        Rango says: <strong>register here!</strong><br />
 
-        <form id="user_form" method="post" action="/register/"
-                enctype="multipart/form-data">
 
-            {% csrf_token %}
 
-            <!-- Display each form. The as_p method wraps each element in a paragraph
-                 (<p>) element. This ensures each element appears on a new line,
-                 making everything look neater. -->
-            
-            {{ user_form.as_p }}
-            {{ merchent_form.as_p }}
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
-        </form>
-        {% endif %}
-    </body>
-</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Content -->
+<div class="bg-white">
+
+    <section class="content content-boxed">
+    <!-- Section Content -->
+        <div class="row items-push push-50-t push-30">
+
+            <div class="col-md-6 col-md-offset-3">
+                
+
+
+
+
+                <form id="user_form" class="form-horizontal" action="/register/" method="post">
+
+
+                    {% csrf_token %}
+
+
+                    {% if user_form.errors %}
+                        {% for field in user_form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-error">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in user_form.non_field_errors %}
+                            <div class="alert alert-error">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div class="form-material form-material-success">
+                                <input class="form-control" type="text" id="id_username" name="username" placeholder="Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.">
+                                <label for="id_username">Username</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div class="form-material form-material-success">
+                                <input class="form-control" type="email" id="id_email" name="email" placeholder="Please provide your email">
+                                <label for="id_email">Email</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div class="form-material form-material-success">
+                                <input class="form-control" type="password" id="id_password" name="password" placeholder="Choose a strong password..">
+                                <label for="id_password">Password</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div class="form-material form-material-success">
+                                <input class="form-control" type="text" id="id_contact_num" name="contact_num" placeholder="Mobile or Office">
+                                <label for="id_contact_num">Contact Number</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div class="form-material form-material-success">
+                                <input class="form-control" type="text" id="id_billing_id_number" name="billing_id_number" placeholder="Idenfication Number provided to you from Billing Company">
+                                <label for="id_billing_id_number">Billing ID Number</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+
+                    
+
+                    <div class="form-group">
+                        <label class="col-xs-12" for="id_cnic_photo">CNIC Photo</label>
+                        <div class="col-xs-12">
+                            <input type="file" id="id_cnic_photo" name="cnic_photo">
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-xs-12 text-center">
+                            <label class="css-input switch switch-sm switch-success">
+                                <span></span> By clicking "Sign Up" you agree with 
+                                <a data-toggle="modal" data-target="#modal-signup-terms" href="#">terms &amp; conditions</a>
+                            </label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-3">
+                        <button class="btn btn-block btn-success" type="submit"><i class="fa fa-plus pull-right"></i> Sign Up</button>
+                        </div>
+                    </div>
+
+
+
+                </form>
+            </div>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Content -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Login -->
+<div class="bg-gray-lighter">
+    <section class="content content-full content-boxed">
+    <!-- Section Content -->
+        <div class="push-20-t push-20 text-center">
+            <h3 class="h4 push-20 visibility-hidden" data-toggle="appear">Do you already have an account?</h3>
+            <a class="btn btn-rounded btn-noborder btn-lg btn-success visibility-hidden" data-toggle="appear" data-class="animated bounceIn" href="frontend_login.html">Log In</a>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Login CTA -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Terms Modal -->
+<div class="modal fade" id="modal-signup-terms" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-popout">
+<div class="modal-content">
+<div class="block block-themed block-transparent remove-margin-b">
+<div class="block-header bg-primary-dark">
+<ul class="block-options">
+<li>
+<button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+</li>
+</ul>
+<h3 class="block-title">Terms &amp; Conditions</h3>
+</div>
+<div class="block-content">
+<p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
+<p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
+<p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
+<p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
+<p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-sm btn-default" type="button" data-dismiss="modal">Close</button>
+<button class="btn btn-sm btn-primary" type="button" data-dismiss="modal"><i class="fa fa-check"></i> I agree</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END Terms Modal -->
+
+
+{% endblock %}

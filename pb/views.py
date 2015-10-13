@@ -56,7 +56,7 @@ def login_user(request):
         else:
             # Bad login details were provided. So we can't log the user in.
             print ("Invalid login details: {0}, {1}".format(username, password))
-            return HttpResponse("Invalid login details supplied.")
+            return HttpResponse("Invalid login details supplied. Go back and try again")
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
@@ -99,7 +99,6 @@ def register(request):
                 merchent.cnic_photo = request.FILES['cnic_photo']
             # Now we save the UserProfile model instance.
             merchent.save()
-
 
             # Update our variable to tell the template registration was successful.
             registered = True
@@ -164,9 +163,15 @@ def user_logout(request):
 
 # --- PAYMENTS --- #
 
+# .. Get the payments history
+# .. Request Payment create payment object
+# .. Get the payment by pk
+
 # --- Track Transfers --- #
 
 # --- Requests --- #
+
+# .. Get the request detail by request id
 def get_request(request, request_id):
     # .. Get the record by request ID
     req = get_object_or_404(Request, pk=request_id)
@@ -180,12 +185,55 @@ def get_request(request, request_id):
         return HttpResponse(jsonrecord)
 
 
+# .. # .. /claim-request/<request_id>
+# .. Claim a request to process by passing the req id
+# .. Make sure if the request_token is set to false 
+# .. check if user is activated and approved
+# .. add or update the request claimed time field in database
+# .. update the time remaining to process a request set call the calculate functions
+# .. redirect to confim request completed page /request_confirm/<request_id>
 
-# def get_requests_by_type(request, request_type, records_limit):
-#     # .. Check what type of requests are needed like claimed or unclaimed
-#     # .. if unclaime then show all the unclaim requests
-#     # .. if claimed then get the requests claimed by the logged in user (request.user)
-#     # .. at last whatever is got return as Json using JsonDump function
+
+
+# .. /request_confirm/<request_id>
+# .. Mark the request completed by providing the confirmation number
+# .. Check if the ID Confirmation is provided
+# .. check if the request if claimed by logged in user
+# .. check if the request has a request token True # if not then tell user time expired to process this request claim it again from claiming section to process it again
+# .. if this all sounds great means true then we go ahead
+# .. mark the request completed in DB field and notify the user by email
+
+
+
+
+# .. /requests-completed/
+# .. Request completed by logged in user
+# .. Get the logged in user by request object
+# .. Query the ORM by saying select from model request where user id is user logged in
+# .. Return the request completed by logged in to template called completed request
+
+
+# .. /requests-claimed/
+# .. Return the the request claimed and not yet completed of logged in merchent user
+# .. Get the logged in user
+# .. query the orm where user id is logged in user and request are claimed by current logged in user 
+# .. and are still pending and have request token True so that they know they can still process it
+
+
+
+# .. /time-lef/<request_id> = AJAX expects a request id to get it's time left
+# .. Trigger this function every 30 mints to check time remaining to process request
+# .. if time is not greater then 30 mints from the time request claim then do nothing
+# .. else if time is greater then 30 mints from the time request was claim then expire
+# .. the token by changing the db field called request_token to False so
+
+
+
+# .. /search_request/<search_text>/
+# .. Get the request by their bill type
+# .. Search within bill types, companies, request id, email address, request phone
+# .. return the object got to template and render it no results found on template end by using count tag/filter
+
 
 
 
@@ -222,7 +270,7 @@ def submit_request_data(request):
             email_address=email_address, 
             btc_address=newly_generated_address,
             btc_amount=btc_amount_to_paid
-
+            
             )
 
         # Encode the DICT to Json
@@ -240,28 +288,28 @@ def submit_request_data(request):
         return HttpResponseRedirect("/404")
 
 
-# --- View for check how much confirmation have been made in there --- #
-def is_request_paid(request, request_id):
-    # .. Call the function btc_tranx_detail
-    # .. Access the balance on this address 
-    # .. if address have balance > 0 and is = to ammount to bill to be paid
-    # ... Mark the item as paid in DB field so we can keep track of it
-    # ... Return payment has been made in Json
-    # .. else we did not got the payment return error message with no payment made yet
-    # ... returm error no payment made yet (json)
+# # --- View for check how much confirmation have been made in there --- #
+# def is_request_paid(request, request_id):
+#     # .. Call the function btc_tranx_detail
+#     # .. Access the balance on this address 
+#     # .. if address have balance > 0 and is = to ammount to bill to be paid
+#     # ... Mark the item as paid in DB field so we can keep track of it
+#     # ... Return payment has been made in Json
+#     # .. else we did not got the payment return error message with no payment made yet
+#     # ... returm error no payment made yet (json)
 
 
 
-# --- We want to make sure if we the request have 
-def is_payment_completed(request, request_id):
-    # Call the function btc_tranx_detail which returning DICT
-    # Get the BTC address from Request model with request ID
-    # check if payment_completed is not set to true
-    # Access the confirmations field value with BTC address
-    # now we need to check the confirmations
-    # Get the confirmations if it's great then 6 then we marke it full safe
-    # Mark the item payment_completed to true in DB field & return good message
-    # if it's not else return error message not yet completed
+# # --- We want to make sure if we the request have 
+# def is_payment_completed(request, request_id):
+#     # Call the function btc_tranx_detail which returning DICT
+#     # Get the BTC address from Request model with request ID
+#     # check if payment_completed is not set to true
+#     # Access the confirmations field value with BTC address
+#     # now we need to check the confirmations
+#     # Get the confirmations if it's great then 6 then we marke it full safe
+#     # Mark the item payment_completed to true in DB field & return good message
+#     # if it's not else return error message not yet completed
 
 
 

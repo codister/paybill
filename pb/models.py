@@ -45,7 +45,7 @@ class Request(models.Model):
 	# --- Country Name (String Perhaps create additional Table)
 	country = models.CharField(max_length=128)
 	# --- Due Bill amount in PKR (Float)
-	pkr_bill_amount = models.DecimalField(max_digits=8, decimal_places=2)
+	pkr_bill_amount = models.IntegerField()
 	# --- Contact Number (String or Numric we'll see that)
 	contact_num = models.CharField(max_length=128)
 	# --- Bill Indentifier Number (String)
@@ -55,8 +55,6 @@ class Request(models.Model):
 	# --- Is Request Processed Status? or Pending (Boolean)
 	is_completed = models.BooleanField(default=False)
 	# --- Requested Completed by Merchent Forign Key
-	completed_by = models.ForeignKey(Merchent)
-	# --- User who have claimed the request to complete it
 	claimed_by = models.ForeignKey(Merchent)
 	# --- Is Request Claimed to be Process (True or False)
 	isclaimed = models.BooleanField(default=False)
@@ -78,6 +76,8 @@ class Request(models.Model):
 	email_address = models.CharField(max_length=100, blank=True)
 	# --- if we have more then 6 confirmations then we mark this transaction completed
 	payment_completed = models.BooleanField(default=False)
+	# --- can be completed token expires after 30 mints
+	request_token = models.BooleanField(default=True)
 
 
 
