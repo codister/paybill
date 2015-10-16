@@ -10,6 +10,8 @@ from datetime import datetime
 class Merchent(models.Model):
 	# --- One to One Relationship key to connect to django default User Model
 	user = models.ForeignKey(User)
+	# --- Requested Completed by Merchent Forign Key
+	# claimed_by = models.ForeignKey(Merchent)
 	# --- Contact Number
 	contact_num = models.CharField(max_length=128)
 	# --- Landline (Default Null)
@@ -37,15 +39,15 @@ class Request(models.Model):
 	# --- Current time when request was submitted (Timestamp)
 	date_time = models.DateTimeField(auto_now=True)
 	# --- Type (Forign key to Request type Model)
-	request_type = models.CharField(max_length=128)
+	bill_type = models.CharField(max_length=128)
 	# --- Bill Payment Companies (Create a New Model Forign KEy)
 	billing_company = models.CharField(max_length=128)
 	# --- Payment form (Default to BTC for now)
 	payment_method = models.CharField(max_length=128, default="BTC")
 	# --- Country Name (String Perhaps create additional Table)
-	country = models.CharField(max_length=128)
+	country = models.CharField(max_length=128, default="Pakistan")
 	# --- Due Bill amount in PKR (Float)
-	pkr_bill_amount = models.IntegerField()
+	pkr_bill_amount = models.IntegerField(default=0)
 	# --- Contact Number (String or Numric we'll see that)
 	contact_num = models.CharField(max_length=128)
 	# --- Bill Indentifier Number (String)
@@ -54,24 +56,22 @@ class Request(models.Model):
 	is_paid = models.BooleanField(default=False)
 	# --- Is Request Processed Status? or Pending (Boolean)
 	is_completed = models.BooleanField(default=False)
-	# --- Requested Completed by Merchent Forign Key
-	claimed_by = models.ForeignKey(Merchent)
 	# --- Is Request Claimed to be Process (True or False)
 	isclaimed = models.BooleanField(default=False)
 	# --- Time Remainig to process a request (Default Null)
-	timeremaining = models.TimeField(auto_now=False, auto_now_add=False)
+	timeremaining = models.TimeField(auto_now=True)
 	# --- Error / Issue Message
 	issue_message = models.TextField(default="No Error or Issue all Clear ")
 	# --- In response to completion request TXID
-	confirmation_id = models.CharField(max_length=200, default=False)
+	confirmation_id = models.CharField(max_length=200, default="Not Yet Provided")
 	# --- BTC confirmations count [int]
 	btc_confirmations = models.IntegerField(default=0)
 	# --- BTC Wallet on which payment was received
 	btc_address = models.CharField(max_length=400)
 	# --- Amount of BTC recived
-	btc_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
+	btc_amount = models.FloatField(default=0)
 	# --- Time at Request was Claimed
-	claiming_time = models.TimeField(auto_now=False, auto_now_add=False)
+	claiming_time = models.TimeField(auto_now=True)
 	# --- Email assoicated with the request to send out Automated email
 	email_address = models.CharField(max_length=100, blank=True)
 	# --- if we have more then 6 confirmations then we mark this transaction completed

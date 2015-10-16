@@ -6,6 +6,9 @@ from pb.models import Merchent, Request, Payment, Company
 from pb.forms import UserForm, MerchentForm
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+
 
 import json, time, requests
 
@@ -149,7 +152,7 @@ def user_logout(request):
 # .. Log the current time in claimed on timming attribute of request
 # .. 
 
-# --- Time Remaing to Process a Request Calculator --- #
+# --- Calculator for Time Remaing to Process a Request  --- #
 
 # .. Make sure if current is has claimed the request he is trying to get the time for (Optional)
 # .. Get the Current time
@@ -237,7 +240,7 @@ def get_request(request, request_id):
 
 
 
-
+@csrf_exempt
 def submit_request_data(request):
     ## Data Validations Needed for Security
     # .. Validate Country Later (())... 
@@ -248,7 +251,7 @@ def submit_request_data(request):
     if request.method == 'POST':
 
         billamount  = request.POST.get('billamount')
-        requesttype = request.POST.get('requesttype')
+        bill_type = request.POST.get('bill_type')
         country     = request.POST.get('country')
         contact_num = request.POST.get('contact_num')
         billing_company = request.POST.get('billing_company')
@@ -258,29 +261,40 @@ def submit_request_data(request):
         newly_generated_address = gen_deposit_address()
         
         # Convert from PKR to BTC on the fly!
-        btc_amount_to_paid = exhange_pkr_to_btc(billamount)
+        bill_in_int = int(billamount)
+        btc_amount_to_paid = exhange_pkr_to_btc(bill_in_int)
         
+
+        # Default user which is Admin it self
+        default_merchent = Merchent.objects.all().filter(pk=1)
         # Save the details to database
-        yoorequest = Request.create( 
+        yoorequest = Request.objects.create( 
             
             pkr_bill_amount=billamount, 
-            requesttype=requesttype, 
-            country=country, 
+            bill_type=bill_type,
             contact_num=contact_num, 
             billing_company=billing_company, 
             email_address=email_address, 
             btc_address=newly_generated_address,
-            btc_amount=btc_amount_to_paid
+            btc_amount=btc_amount_to_paid,
 
             )
 
+        # Debug
+
+        print (yoorequest)
+        print (yoorequest.pk)
+
         # Encode the DICT to Json
         response = {
-
+            "requestid" : yoorequest.pk,
             "amountdue" : btc_amount_to_paid,
-            "baddress"  : newly_generated_address
+            "baddress"  : newly_generated_address,
+            "status"    : "true"
 
         }
+
+        print(response)
 
         # Return a message that data has been saved in Json Format
         return HttpResponse(json.dumps(response))
@@ -289,15 +303,40 @@ def submit_request_data(request):
         return HttpResponseRedirect("/404")
 
 
-# # --- View for check how much confirmation have been made in there --- #
-# def is_request_paid(request, request_id):
-#     # .. Call the function btc_tranx_detail
-#     # .. Access the balance on this address 
-#     # .. if address have balance > 0 and is = to ammount to bill to be paid
-#     # ... Mark the item as paid in DB field so we can keep track of it
-#     # ... Return payment has been made in Json
-#     # .. else we did not got the payment return error message with no payment made yet
-#     # ... returm error no payment made yet (json)
+# --- View for check how much confirmation have been made in there --- #
+def is_request_paid(request, request_id):
+    # .. Get the BTC address by request ID
+    bill_request = Request.objects.get(pk=request_id)
+    # .. Call the function btc_tranx_detail
+    trx_details = btc_tranx_detail(bill_request.btc_address)
+
+    # .. Debug mode
+    print (trx_details)
+    print (type(trx_details))
+
+    # .. Access the balance on this address and convert from Satoshi to BTC
+    balance_receive = trx_details["total_received"] / 100000000
+
+    # .. if address have balance > 0 and is = to ammount to bill to be paid
+
+    print (bill_request.btc_amount)
+    print (balance_receive)
+
+    if balance_receive == bill_request.btc_amount:
+        # ... Mark the item as paid in DB field so we can keep track of it
+        bill_request.ispaid = True
+        bill_request.save()
+        # ... Return payment has been made in Json
+        response = {
+            "ispaid" : "true"
+        }
+    # .. else we did not got the payment return error message with no payment made yet
+    else:
+        response = {
+            "ispaid" : "false"
+        }
+    # .. returm error no payment made yet (json)
+    return HttpResponse(json.dumps(response))
 
 
 
@@ -340,6 +379,10 @@ def exhange_pkr_to_btc(amount):
     # Access and store the variable ( exchange rate )
     pkr_exhange_rate = data["buy"]
     
+    print(type(pkr_exhange_rate))
+
+    print(type(amount))
+
     # Convert the PKR amount to BTC
     return amount / pkr_exhange_rate
 

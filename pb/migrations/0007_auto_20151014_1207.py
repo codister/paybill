@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pb', '0001_initial'),
+        ('pb', '0006_remove_request_claimed_by'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='request',
-            name='request_token',
-            field=models.BooleanField(default=True),
+            name='btc_amount',
+            field=models.DecimalField(default=0.0, max_digits=20, decimal_places=0),
         ),
     ]

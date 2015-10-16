@@ -9,6 +9,7 @@ urlpatterns = patterns('',
         url(r'^register/$', views.register, name='register'),
         url(r'^login/$', views.login_user, name='login_user'),
         url(r'request/(?P<request_id>[0-9]+)/$', views.get_request, name='get_request'),
+        url(r'isrequestpaid/(?P<request_id>[0-9]+)/$', views.is_request_paid, name='is_request_paid'),
         
         # Ajax
         url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),
