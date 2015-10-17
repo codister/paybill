@@ -8,22 +8,15 @@ from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from datetime import datetime, timezone
 
-
+#Standard Import related to Python
 import json, time, requests
 
 
 def index(request):
     # Just return the Landing page template back to the user!
     return render(request, "index.html")
-
-
-
-
-
-
-
-
 
 
 # --- MERCHENT LOGIN --- #
@@ -240,6 +233,17 @@ def get_request(request, request_id):
 
 
 
+
+
+###########################################
+####                                   ####
+####  User Request's API Interactions  ####
+####                                   ####
+###########################################
+
+
+
+
 @csrf_exempt
 def submit_request_data(request):
     ## Data Validations Needed for Security
@@ -262,9 +266,12 @@ def submit_request_data(request):
         
         # Convert from PKR to BTC on the fly!
         bill_in_int = int(billamount)
-        btc_amount_to_paid = exhange_pkr_to_btc(bill_in_int)
+        btc_amount_rep = exhange_pkr_to_btc(bill_in_int)
         
-
+        # limit the btc amount amount to be paid to show 8 digits after decimal points
+        limited_str = '%.8f' % (btc_amount_rep)
+        # convert it back to flaot in to same variable
+        btc_amount_to_paid = float(limited_str)
         # Default user which is Admin it self
         default_merchent = Merchent.objects.all().filter(pk=1)
         # Save the details to database
@@ -310,55 +317,148 @@ def is_request_paid(request, request_id):
     # .. Call the function btc_tranx_detail
     trx_details = btc_tranx_detail(bill_request.btc_address)
 
+    # Get the time right now server time
+    time_now = datetime.now(timezone.utc).replace(microsecond=0)
+    print(time_now)
+
+    # Get the time difference
+    request_creation_time = bill_request.date_time.replace(microsecond=0)
+    print(request_creation_time)
+    
+    # TimeDelta class base time difference between two results
+    time_difference = time_now - request_creation_time 
+
+    print(time_difference)
+
+    # Get the time difference in Minutes for more readable format
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Check if time ago is less in [30] minutes
+    if minutes < 30 :
+        timeleft_min = 30 - minutes
+        timeleft_sec = seconds
+    else:
+        timeleft_min = 0
+        timeleft_sec = seconds
+
+    print(timeleft_min)
+
+    
     # .. Debug mode
-    print (trx_details)
-    print (type(trx_details))
+    # print (trx_details)
+    # print (type(trx_details))
 
     # .. Access the balance on this address and convert from Satoshi to BTC
     balance_receive = trx_details["total_received"] / 100000000
 
-    # .. if address have balance > 0 and is = to ammount to bill to be paid
-
     print (bill_request.btc_amount)
-    print (balance_receive)
+    print ("Balance Received from User", balance_receive)
 
+    # .. if address have balance > 0 and is = to ammount to bill to be paid
     if balance_receive == bill_request.btc_amount:
         # ... Mark the item as paid in DB field so we can keep track of it
         bill_request.ispaid = True
         bill_request.save()
         # ... Return payment has been made in Json
         response = {
-            "ispaid" : "true"
+            "ispaid"     : "true",
+            "requestid"  : request_id,
+            "leftmin"    : timeleft_min,
+            "leftsec"    : timeleft_sec
         }
     # .. else we did not got the payment return error message with no payment made yet
     else:
         response = {
-            "ispaid" : "false"
+            # change "ispaid" to false" debug only
+            "ispaid"     : "true",
+            "requestid"  : request_id,
+            "leftmin"    : timeleft_min,
+            "leftsec"    : timeleft_sec
         }
+
     # .. returm error no payment made yet (json)
     return HttpResponse(json.dumps(response))
 
 
 
-# # --- We want to make sure if we the request have 
-# def is_payment_completed(request, request_id):
-#     # Call the function btc_tranx_detail which returning DICT
-#     # Get the BTC address from Request model with request ID
-#     # check if payment_completed is not set to true
-#     # Access the confirmations field value with BTC address
-#     # now we need to check the confirmations
-#     # Get the confirmations if it's great then 6 then we marke it full safe
-#     # Mark the item payment_completed to true in DB field & return good message
-#     # if it's not else return error message not yet completed
 
 
+# --- time in minuted left to pay bill request --- #
+def time_left_to_pay(request, request_id):
+    # Get the Bill request of which we need time remaining
+    bill_request = Request.objects.get(pk=request_id)
+    # Get the time right now server time
+    time_now = datetime.now(timezone.utc).replace(microsecond=0)
+    print(time_now)
+
+    # Get the time difference
+    request_creation_time = bill_request.date_time.replace(microsecond=0)
+    print(request_creation_time)
+    
+    # TimeDelta class base time difference between two results
+    time_difference = time_now - request_creation_time 
+
+    # print the time right now in UTC
+
+    # print the time of request initiated
+    print("Time difference is : " , time_difference)
+
+    # Get the time difference in Minutes for more readable format
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Check if time ago is less in [30] minutes
+    if minutes < 30 :
+        timeleft_min = 30 - minutes
+        timeleft_sec = seconds
+    else:
+        timeleft_min = 0
+        timeleft_sec = seconds
 
 
+    response = {
+
+        "minleft" : timeleft_min, 
+        "secleft" : timeleft_sec
+    }
+
+    # Return Json encoded response 
+    return HttpResponse(json.dumps(response))
+
+
+# API for getting companies we support with respoect to bill type
 def get_companies(request, bill_type):
 
     companies = Company.objects.all().filter(bill_type=bill_type)
     data = serializers.serialize("json", companies)
+
+    # Return the encoded Companies to user
     return HttpResponse (data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -370,6 +470,19 @@ def get_companies(request, bill_type):
 ############################
 
 
+
+# --- Get the BTC TRANSACTION details with BTC address --- #
+def btc_tranx_detail(btc_address):
+    # http://api.blockcypher.com/v1/btc/main/addrs/3HcGoxru2msKRcmpktDNSrAgNCB9B7Zu4V
+    # Make a get request to the URL with Dynamic Address
+    trx_details = requests.get( "http://api.blockcypher.com/v1/btc/main/addrs/" + btc_address ).json()
+    
+    # return the DICT
+    return trx_details
+
+
+# --- Exhange the PKR to BTC --- #
+# Takes [int] as amount and return [float] results converted to BTC
 def exhange_pkr_to_btc(amount):
     # First of all get the exhange rate
     
@@ -387,24 +500,10 @@ def exhange_pkr_to_btc(amount):
     return amount / pkr_exhange_rate
 
 
-
-
-
-# --- Get the BTC TRANSACTION details with BTC address --- #
-def btc_tranx_detail(btc_address):
-    # http://api.blockcypher.com/v1/btc/main/addrs/3HcGoxru2msKRcmpktDNSrAgNCB9B7Zu4V
-    # Make a get request to the URL with Dynamic Address
-    trx_details = requests.get( "http://api.blockcypher.com/v1/btc/main/addrs/" + btc_address ).json()
-    
-    # return the DICT
-    return trx_details
-
-
-
-
-
 # --- Generate a new address for making payments from bitfinex --- #
+# Takes [None] , return [string] newly generated address [string]
 def gen_deposit_address():
+
     # Import specific to this function
     import base64
     import hashlib
@@ -417,7 +516,7 @@ def gen_deposit_address():
 
     payloadObject = {
             'request':'/v1/deposit/new',
-            'nonce':str(time.time() * 100000), #convert to string
+            'nonce':str(time.time() * 1000000), #convert to string
             'method':'bitcoin',
             'wallet_name':'deposit',
             'renew':1
@@ -438,4 +537,7 @@ def gen_deposit_address():
 
     r = requests.get(bitfinexURL, data={}, headers=headers)
     bit_data = r.json()
+
+    print(bit_data)
+
     return bit_data['address']['address']

@@ -15,6 +15,7 @@ urlpatterns = patterns('',
         url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),
 
         url(r'getcompanies/(?P<bill_type>[-\w]+)/$', views.get_companies, name='get_companies'),
+        url(r'timeleft/(?P<request_id>[0-9]+)/$', views.time_left_to_pay, name='time_left_to_pay'),
 
 
         url(r'^logout/$', views.user_logout, name='logout'),)

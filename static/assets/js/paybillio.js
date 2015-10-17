@@ -1,4 +1,3 @@
-// Form Handling of Request Submission
 
 
 // Once someone click to submit of request form
@@ -13,7 +12,16 @@ $("#submit_req_form").click(function()
 	billidnumber=$("#validation-billidnumber").val();
 	billamount=$("#validation-billamount").val();
 	contact_num=$("#validation-contact_num").val();
-	
+
+
+	$("#loading-ajax").show();
+
+// Hide the form fields, previous, and submit button
+	$("#removefinal").hide()
+	$("#previous-step").remove();
+	$("#next-step").remove();
+	$("#button-control").empty();
+
 	// Do the 
 	$.ajax({
 
@@ -47,132 +55,85 @@ $("#submit_req_form").click(function()
 			console.log(amount_due);
 			console.log(request_id);
 
-
-			// Hide the form fields, previous, and submit button
-			$("#removefinal").hide()
-			$("#previous-step").remove();
-			$("#next-step").remove();
-			$("#button-control").empty();
-
-			//Show the button to check if the payment is completed
-			$("#button-control").append("<button id='payment-check' class='wizard-finish btn btn-success' type='submit'><i class='fa fa-check-circle-o fa-spin'></i> Check Payment</button>");
 			
 			// show the payment detail div so we print our
 			// .. Server generated details and append into it
+			$("#loading-ajax").hide();
 			$("#show_payment_details").show();
 
-			// Show the user Request id along with btc addressa and amount due in BTC
+			// Show the user Request id along with btc addressa , 
+			// amount due and time left to complete the purchase
 
+			$("#btc-address").append(btc_address);
+			$("#due-amount").append(amount_due);
+			$("#request-id").append(request_id);
+			// Storing it hidden on page
+			$("#hidden-request-id").append(request_id);
+
+			//Show the button to check if the payment is completed
+			$("#outer-form").append("<div id='payment-confirm-div' class='text-center'><button id='payment-check' class='wizard-finish btn btn-success' type='submit'><i class='fa fa-check-circle-o fa-spin'></i> Check Payment</button></div></br>");
+
+		},
+
+		complete : function() {
+			$("#payment-check").click(function(){
+
+				var request_id = $("#hidden-request-id").text();
+				$("#loading-ajax").show();
+				$("#show_payment_details").hide();
+
+
+				$.ajax({
+
+					type: "GET",
+					url: "/isrequestpaid/" + request_id + "/" ,
+
+					// very important or you'll get string stripped
+					dataType: "json",
+
+					// # .. On Success call
+					success: function(data) {
+
+						// # .. Print data to dev Console
+						console.log(data);
+						ispaid = data["ispaid"];
+						minleft = data["leftmin"];
+
+						console.log(ispaid);
+						console.log(minleft);
+
+
+						if (ispaid == "true" && minleft !== "0") {
+
+							$("#loading-ajax").hide();
+							$("#payment-confirm-div").hide();
+							$("#confirm-payment").show();
+							console.log("i'm being excuted after the success div")
+
+						};
+
+						if (ispaid == "false") {
+							//show error message we got most likley i would turn this into a function
+							$("#loading-ajax").hide();
+							$("#show_payment_details").show();
+
+							$("#jumping-jack").show();
+						};
+
+					}, // end of suceesfull call excution function
+				}); // end of ajax call
+			   
+			});
 		},
 
 	});
 	
-	return false;
-});
-
-
-
-// Once user click to confirm the payment we check and tell him if it happend or not
-// .. if it does then make a request call to confim payment URL
-// .. If not then tell user we did not recived the funds or he belives it's an error
-// .. then he should be sending us email along with request ID he gotå
-
-$("#payment-check").click(function()
-{
-
-
-	$("#show_payment_details").hide();
-	$("#loading_ajax").show();
-
-	$.ajax ({
-
-		type: "GET",
-		url: "/isrequestpaid/" + request_id + "/" ,
-
-		// very important or you'll get string stripped
-		dataType: "json",
-
-		// # .. On Success call
-		success: function(data) {
-
-			console.log("i m success call function which excutes after user clicks payment check button")
-			console.log(data)
-
-			var ispaid = data["ispaid"]
-			var request_id = ["requestid"]
-			var is_time_left = data["istimeleft"]
-
-			if ( ispaid == true && istimeleft == true ) {
-
-				// ok then now we now we got the payment tell the user and user have
-				// .. paid the payment within given period of time
-
-				// ... Hide the payment info div
-				
-				// ... Show the div with big success message and tverse values to screen
-
-
-
-			}else{
-
-				// Error notification handling
-
-				// show the error message tell the error message to user
-
-				if ( ispaid == true && is_time_left == false ) {
-
-
-					// Issue a error message saying we got a payment 
-					// But you were to late to complete the payment within given time period
-
-					$("#show_payment_details").show();
-
-				};
-
-				if ( ispaid == false && is_time_left == true ) {
-
-					// Issue error message no payment got at all
-					// but you can still try again to pay you have time left to pay your
-					// request
-
-					$("#show_payment_details").show();
-
-				};
-
-
-				if ( ispaid == false && is_time_left == false ) {
-
-
-					// No payment got niether user have time left to pay a it
-					// so restart the request process
-
-					console.log("No Payment or anything restart the Request process");
-
-
-				};
-			};
-
-
-
-		}, // end of suceesfull call excution function
-
-	}); // end of ajax call 
-
-
 });
 
 
 
 
-
-
-
-
-///////										  	 //////
-//////  AJAX form handling for submit request  ///////
-/////										 ////////
-
-
+// AJAX form handling for submit request 
 $('#validation-bill_type').on('change', function() {
 	
 	var bill_type = $(this).val();
@@ -216,24 +177,14 @@ $('#validation-bill_type').on('change', function() {
 
 
 
-
-
-
-
-
-
-				
-////////////
-///////////		MANIPULATIING THE DOM 
-
-
 // Workaround to hide a default div to and 
-//to show it on demand based on ajax request
-
-$("#next-step").click(function()
+// .. to show it on demand based on ajax request
+// .. We are going to hide some div's as soon as page loads
+$(document).ready(function() 
 {
-	
-	$("#show_payment_details").hide();
-	$("#loading_ajax").hide();
+    $("#jumping-jack").hide();
+    $("#show_payment_details").hide();
+	$("#loading-ajax").hide();
+	$("#confirm-payment").hide();
 
 });

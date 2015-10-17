@@ -34,7 +34,7 @@ class Merchent(models.Model):
 	total_earnings = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
 
 
-# Requests Model to Store Requests
+# Requests Model to Store Requests Mostly refered as bill request
 class Request(models.Model):
 	# --- Current time when request was submitted (Timestamp)
 	date_time = models.DateTimeField(auto_now=True)

@@ -41,7 +41,7 @@
 		<div class="col-lg-6">
 			<!-- Validation Wizard (.js-wizard-validation class is initialized in js/pages/base_forms_wizard.js) -->
 			<!-- For more examples you can check out http://vadimg.com/twitter-bootstrap-wizard-example/ -->
-			<div class="js-wizard-validation block animated block-link-hover2 zoomInUp">
+			<div id="outer-form" class="js-wizard-validation block animated block-link-hover2 zoomInUp">
 				<!-- Step Tabs -->
 				<ul class="nav nav-tabs nav-tabs-alt nav-justified">
 					<li class="active">
@@ -241,6 +241,35 @@
 								</div>
 
 
+								<div id="loading-ajax" class="text-center">
+									
+								</br>
+								</br>
+								</br>
+									<i class="fa fa-gear fa-spin fa-4x"></i>
+								</br>
+								</br>
+								</br>
+
+								</div>
+
+								<div id="confirm-payment" class="text-center">
+									
+								</br>
+								</br>
+								</br>
+									<i class="fa fa-check-circle fa-4x"></i>
+									<h2>Payment has been made!</h2>
+									<p>You'll recive Confirmation email Shortly as soon as 
+									</br>
+									we have <strong>6 confirmation</strong> from block chain on your payment address!</p>
+								</br>
+								</br>
+								</br>
+
+								</div>
+
+
 
 								<div id="show_payment_details" class="col-sm-offset-2">
 									<h3>Payment Information</h3>
@@ -250,19 +279,19 @@
 									</br>
 									exact amount list below with in given left time!
 									<br>
-                                        <span class="label label-default"><i class="fa fa-bitcoin"></i> 3HcGoxru2msKRcmpktDNSrAgNCB9B7Zu4V  </span>
+                                        <span id="btc-address" class="label label-default"><i class="fa fa-bitcoin"></i> BTC Address : </span>
   										
 										<br>
 
-                                    	<span class="label label-primary 2px-margin-label"><i class="fa fa-money"></i> 0.00172413</span>
+                                    	<span id="due-amount" class="label label-primary 2px-margin-label"><i class="fa fa-money"></i> Due Amount : </span>
  										
  										<br>
 
-                                    	<span class="label label-warning 2px-margin-label"><i class="fa fa-info-circle"></i> Request ID : 100234</span>
+                                    	<span id="request-id" class="label label-warning 2px-margin-label"><i class="fa fa-info-circle"></i> Request ID : </span>
 
                                     	<br>
 
-                                    	<span class="label label-danger 2px-margin-label"><i class="fa fa-clock-o fa-spin"></i> Timeleft : 12:40</span>
+                                    	<span id="minutes" class="label label-danger 2px-margin-label"><i class="fa fa-clock-o fa-spin"></i>Timeleft : 30mins</span>
 
   					
                                     </p>
@@ -426,7 +455,7 @@
 
 </div>
 
-
+<div id="hidden-request-id" style="display: none;"></div>
 
 {% endblock %}
 
