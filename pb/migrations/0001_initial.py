@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Company',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=128)),
                 ('bill_type', models.CharField(max_length=128)),
                 ('country', models.CharField(max_length=128)),
@@ -24,24 +24,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Merchent',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('contact_num', models.CharField(max_length=128)),
                 ('landline_num', models.CharField(max_length=128)),
-                ('cnic_photo', models.ImageField(upload_to='cnic_images', blank=True)),
-                ('cinc_selfi_photo', models.ImageField(upload_to='cnic_selfi_images', blank=True)),
+                ('cnic_photo', models.ImageField(blank=True, upload_to='cnic_images')),
+                ('cinc_selfi_photo', models.ImageField(blank=True, upload_to='cnic_selfi_images')),
                 ('isverified_email', models.BooleanField(default=False)),
                 ('is_account_active', models.BooleanField(default=False)),
                 ('is_admin_approve', models.BooleanField(default=False)),
                 ('is_admin_blocked', models.BooleanField(default=False)),
                 ('billing_id_number', models.CharField(max_length=128)),
-                ('total_earnings', models.DecimalField(decimal_places=15, default=0.0, max_digits=20)),
+                ('total_earnings', models.DecimalField(max_digits=20, default=0.0, decimal_places=15)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Payment',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('date_time', models.DateTimeField(auto_now=True)),
                 ('payment_status', models.CharField(max_length=128)),
                 ('payment_amount', models.IntegerField(default=0)),
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Request',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
                 ('date_time', models.DateTimeField(auto_now=True)),
                 ('bill_type', models.CharField(max_length=128)),
                 ('billing_company', models.CharField(max_length=128)),
@@ -75,6 +75,7 @@ class Migration(migrations.Migration):
                 ('email_address', models.CharField(blank=True, max_length=100)),
                 ('payment_completed', models.BooleanField(default=False)),
                 ('request_token', models.BooleanField(default=True)),
+                ('time_claimed_on', models.DateTimeField(blank=True)),
             ],
         ),
     ]

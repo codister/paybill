@@ -12,11 +12,11 @@ $("#submit_req_form").click(function()
 	billidnumber=$("#validation-billidnumber").val();
 	billamount=$("#validation-billamount").val();
 	contact_num=$("#validation-contact_num").val();
-
-
+	
+	// Show loading gear
 	$("#loading-ajax").show();
-
-// Hide the form fields, previous, and submit button
+	
+	// Hide the form fields, previous, and submit button
 	$("#removefinal").hide()
 	$("#previous-step").remove();
 	$("#next-step").remove();
@@ -126,10 +126,10 @@ $("#submit_req_form").click(function()
 			});
 		},
 
+
 	});
 	
 });
-
 
 
 
@@ -178,8 +178,6 @@ $('#validation-bill_type').on('change', function() {
 
 
 // Workaround to hide a default div to and 
-// .. to show it on demand based on ajax request
-// .. We are going to hide some div's as soon as page loads
 $(document).ready(function() 
 {
     $("#jumping-jack").hide();
@@ -188,3 +186,42 @@ $(document).ready(function()
 	$("#confirm-payment").hide();
 
 });
+
+
+// ################ //
+// Helper functions //
+// ################ //
+
+
+
+// Helper function to display erros on page
+function show_error_message ( error_message )
+{
+
+	var error_html = "<div id='jumping-jack' class='col-xs-11 col-sm-4 alert alert-danger animated fadeIn' role='alert' data-notify-position='top-center' style='display: inline-block; margin: 0px auto; position: fixed; transition: all 0.5s ease-in-out; -webkit-transition: all 0.5s ease-in-out; z-index: 1031; top: 20px; left: 0px; right: 0px; -webkit-animation: 1; animation: 1;'><span data-notify='icon' class='fa fa-times'></span><span data-notify='title'></span><span id='error-message-ajax' data-notify='message'> </span></div>";
+
+	// Append it inside the body tag
+	$("body").append(error_html);
+
+	// Append the error message inside the newly created error_html
+	$("#error-message-ajax").append( error_message );
+
+}
+
+
+// display success messages on the page
+function show_ok_message ( ok_message ) 
+{
+	
+	// body...
+	var ok_html = "<div id='jumping-jack' class='col-xs-11 col-sm-4 alert alert-success animated fadeIn' role='alert' data-notify-position='top-center' style='display: inline-block; margin: 0px auto; position: fixed; transition: all 0.5s ease-in-out; -webkit-transition: all 0.5s ease-in-out; z-index: 1031; top: 20px; left: 0px; right: 0px; -webkit-animation: 1; animation: 1;'><span data-notify='icon' class='fa fa-check-circle'></span><span data-notify='title'></span><span id='success-message-ajax' data-notify='message'> </span></div>";
+		// Append it inside the body tag
+	$("body").append(ok_html);
+
+	// Append the error message inside the newly created error_html
+	$("#success-message-ajax").append( ok_message );
+
+}
+
+//get the 
+

@@ -120,13 +120,11 @@ def register(request):
 # Getting the User Logged out of the System
 @login_required
 def user_logout(request):
-
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
-
 
 # --- DASHBOARD --- #
 
@@ -135,27 +133,6 @@ def user_logout(request):
 # .. Get the Pending Request which need to be process and also exclude where isCLaimed attribute is True
 # .. Add Pagination for Bulk Records
 # .. 
-
-# --- Claim a Request --- #
-
-# .. Get the id of request to be claimed
-# .. Get the Current USER
-# .. Get a single request record by id
-# .. Change the Attribute value (isClaimed) to True of Request Record we just got from database
-# .. Log the current time in claimed on timming attribute of request
-# .. 
-
-# --- Calculator for Time Remaing to Process a Request  --- #
-
-# .. Make sure if current is has claimed the request he is trying to get the time for (Optional)
-# .. Get the Current time
-# .. Get the time when request was claimed on
-# .. get the time difference
-# .. GEt the Attribute time remaing and store it in there
-# .. Get the claim on timming Attribute value of request we are trying to calculate time for
-# .. Calculate the x time passed away since the request is claimed
-# .. If the x time is more then 30 mints then change the transaction isClamed attribute status to false
-# .. If the x time is less then 30 mints then return remaining time to complete the transaction to current time
 
 
 # --- PAYMENTS --- #
@@ -167,6 +144,13 @@ def user_logout(request):
 # --- Track Transfers --- #
 
 # --- Requests --- #
+
+#####################################################
+####                                             ####
+####  Merchent Area Requests view and Processing ####
+####                                             ####
+#####################################################
+
 
 # .. Get the request detail by request id
 def get_request(request, request_id):
@@ -235,13 +219,11 @@ def get_request(request, request_id):
 
 
 
-###########################################
-####                                   ####
-####  User Request's API Interactions  ####
-####                                   ####
-###########################################
-
-
+#####################################################
+####                                             ####
+####  Front end User Request's API Interactions  ####
+####                                             ####
+#####################################################
 
 
 @csrf_exempt
@@ -379,9 +361,6 @@ def is_request_paid(request, request_id):
 
     # .. returm error no payment made yet (json)
     return HttpResponse(json.dumps(response))
-
-
-
 
 
 # --- time in minuted left to pay bill request --- #

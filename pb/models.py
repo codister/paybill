@@ -78,6 +78,9 @@ class Request(models.Model):
 	payment_completed = models.BooleanField(default=False)
 	# --- can be completed token expires after 30 mints
 	request_token = models.BooleanField(default=True)
+	# --- Request Completed by which merchent
+	time_claimed_on = models.DateTimeField(blank=True)
+
 
 
 
