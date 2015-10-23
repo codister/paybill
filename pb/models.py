@@ -10,8 +10,6 @@ from datetime import datetime
 class Merchent(models.Model):
 	# --- One to One Relationship key to connect to django default User Model
 	user = models.ForeignKey(User)
-	# --- Requested Completed by Merchent Forign Key
-	# claimed_by = models.ForeignKey(Merchent)
 	# --- Contact Number
 	contact_num = models.CharField(max_length=128)
 	# --- Landline (Default Null)
@@ -31,7 +29,7 @@ class Merchent(models.Model):
 	# --- ID number provided by billing company
 	billing_id_number = models.CharField(max_length=128)
 	# --- Balance Earned
-	total_earnings = models.DecimalField(default=0.00, max_digits=20, decimal_places=15)
+	total_earnings = models.IntegerField(default=0)
 
 
 # Requests Model to Store Requests Mostly refered as bill request
@@ -56,30 +54,26 @@ class Request(models.Model):
 	is_paid = models.BooleanField(default=False)
 	# --- Is Request Processed Status? or Pending (Boolean)
 	is_completed = models.BooleanField(default=False)
-	# --- Is Request Claimed to be Process (True or False)
-	isclaimed = models.BooleanField(default=False)
-	# --- Time Remainig to process a request (Default Null)
-	timeremaining = models.TimeField(auto_now=True)
 	# --- Error / Issue Message
 	issue_message = models.TextField(default="No Error or Issue all Clear ")
 	# --- In response to completion request TXID
-	confirmation_id = models.CharField(max_length=200, default="Not Yet Provided")
+	confirmation_txid = models.CharField(default="No Information ID Provided",  max_length=128)
 	# --- BTC confirmations count [int]
 	btc_confirmations = models.IntegerField(default=0)
 	# --- BTC Wallet on which payment was received
 	btc_address = models.CharField(max_length=400)
 	# --- Amount of BTC recived
 	btc_amount = models.FloatField(default=0)
-	# --- Time at Request was Claimed
-	claiming_time = models.TimeField(auto_now=True)
 	# --- Email assoicated with the request to send out Automated email
 	email_address = models.CharField(max_length=100, blank=True)
 	# --- if we have more then 6 confirmations then we mark this transaction completed
 	payment_completed = models.BooleanField(default=False)
 	# --- can be completed token expires after 30 mints
 	request_token = models.BooleanField(default=True)
-	# --- Request Completed by which merchent
+	# --- Time at Request was Claimed
 	time_claimed_on = models.DateTimeField(blank=True)
+	# --- who claims the Bill Request --- #
+	claimer = models.ForeignKey(Merchent,default="1")
 
 
 

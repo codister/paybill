@@ -49,7 +49,7 @@
                             <button class="btn btn-link text-gray pull-right visible-xs visible-sm" type="button" data-toggle="layout" data-action="sidebar_close">
                                 <i class="fa fa-times"></i>
                             </button>
-                            <a class="h5 text-white" href="start_frontend.html">
+                            <a class="h5 text-white" href="/">
                                 <i class="fa fa-circle-o-notch text-primary"></i> <span class="h4 font-w600 sidebar-mini-hide">ne</span>
                             </a>
                         </div>
@@ -60,25 +60,62 @@
 
                             <ul class="nav-main">
                                 <li>
-                                    <a class="active" href="start_frontend.html"><i class="si si-home"></i><span class="sidebar-mini-hide">Home</span></a>
+                                    <a class="active" href="/"><i class="si si-home"></i><span class="sidebar-mini-hide">Home</span></a>
                                 </li>
+
+                                <li class="nav-main-heading">
+                                    <span class="sidebar-mini-hide">Merchent Area</span>
+                                </li>
+
 
                                 {% if user.is_authenticated %}
 
-                                    <li class="nav-main-heading"><span class="sidebar-mini-hide">Merchent Panel</span></li>
 
-                                    <li>
-                                        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-wrench"></i><span class="sidebar-mini-hide">Dropdown</span></a>
-                                        <ul>
-                                            <li>
-                                                <a href="start_frontend.html">Link #1</a>
-                                            </li>
-                                            <li>
-                                                <a href="start_frontend.html">Link #2</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    
+                                <li>
+                                    <a href="/dashboard/"><i class="si si-speedometer"></i>
+                                        <span class="sidebar-mini-hide">Dashboard</span></a>
+                                </li>
+
+
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-book-open"></i><span class="sidebar-mini-hide">Bill Requests</span></a>
+                                    <ul>
+                                        <li>
+                                            <a href="/latest-requests/">Latest Requests</a>
+                                        </li>
+                                        <li>
+                                            <a href="/completed-requests/">Completed Requests</a>
+                                        </li>
+                                        <li>
+                                            <a href="/claimed-requests/">Requests to be Processed</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="/settings"><i class="si si si-wrench"></i>
+                                        <span class="sidebar-mini-hide">Settings</span></a>
+                                </li>
+
+
+                                <li>
+                                    <a href="/logout"><i class="si si si-logout"></i>
+                                        <span class="sidebar-mini-hide">Logout</span></a>
+                                </li>
+
+
+                                {% else %}
+
+
+                                <li>
+                                    <a href="/login"><i class="si si-login"></i><span class="sidebar-mini-hide">Login</span></a>
+                                </li>
+
+
+                                <li>
+                                    <a href="/register"><i class="si si-user-follow"></i><span class="sidebar-mini-hide">Register</span></a>
+                                </li>
+
                                 {% endif %}
                             </ul>
                         </div>
@@ -107,7 +144,7 @@
                     <!-- Header Navigation Left -->
                     <ul class="nav-header pull-left">
                         <li class="header-content">
-                            <a class="h5" href="start_frontend.html">
+                            <a class="h5" href="/">
                                 <i class="fa fa-circle-o-notch text-primary"></i> <span class="h4 font-w600 text-white">ne</span>
                             </a>
                         </li>
@@ -133,42 +170,44 @@
             <!-- END Main Container -->
 
             <!-- Footer -->
-            <footer id="page-footer" class="bg-white">
+            <footer id="page-footer" class="bg-gray-lighter">
                 <div class="content content-boxed">
                     <!-- Footer Navigation -->
                     <div class="row push-30-t items-push-2x">
                         <div class="col-sm-4">
-                            <h3 class="h5 font-w600 text-uppercase push-20">Header</h3>
+                            <h3 class="h5 font-w600 text-uppercase push-20">Navigation</h3>
                             <ul class="list list-simple-mini font-s13">
                                 <li>
-                                    <a class="font-w600" href="javascript:void(0)">Link #1</a>
+                                    <a class="font-w600" href="javascript:void(0)">About</a>
                                 </li>
                                 <li>
-                                    <a class="font-w600" href="javascript:void(0)">Link #2</a>
+                                    <a class="font-w600" href="javascript:void(0)">FAQ's</a>
+                                </li>
+                                <li>
+                                    <a class="font-w600" href="javascript:void(0)">Contact</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="col-sm-4">
-                            <h3 class="h5 font-w600 text-uppercase push-20">Header</h3>
+                            <h3 class="h5 font-w600 text-uppercase push-20">Merchent</h3>
                             <ul class="list list-simple-mini font-s13">
                                 <li>
-                                    <a class="font-w600" href="javascript:void(0)">Link #1</a>
+                                    <a class="font-w600" href="javascript:void(0)">Login</a>
                                 </li>
                                 <li>
-                                    <a class="font-w600" href="javascript:void(0)">Link #2</a>
+                                    <a class="font-w600" href="javascript:void(0)">Register</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="col-sm-4">
                             <h3 class="h5 font-w600 text-uppercase push-20">Header</h3>
                             <div class="font-s13 push">
-                                <strong>Company, Inc.</strong><br>
-                                980 Folsom Ave, Suite 1230<br>
-                                San Francisco, CA 94107<br>
-                                <abbr title="Phone">P:</abbr> (123) 456-7890
+                                <strong>Paybill.io , Inc</strong><br>
+                                Karachi Sindh, Pakistan<br>
+                                <abbr title="Phone">P:</abbr> (0900) - 786 - 0101
                             </div>
                             <div class="font-s13">
-                                <i class="si si-envelope-open"></i> company@example.com
+                                <i class="si si-envelope-open"></i> support@paybill.io
                             </div>
                         </div>
                     </div>
@@ -178,10 +217,10 @@
                     <div class="font-s12 push-20 clearfix">
                         <hr class="remove-margin-t">
                         <div class="pull-right">
-                            Crafted with <i class="fa fa-heart text-city"></i> by <a class="font-w600" href="http://goo.gl/vNS3I" target="_blank">pixelcave</a>
+                            Crafted with <i class="fa fa-heart text-city"></i> by <a class="font-w600" href="http://hassannaseer.com" target="_blank">hassan</a>
                         </div>
                         <div class="pull-left">
-                            <a class="font-w600" href="javascript:void(0)" target="_blank">OneUI</a> &copy; <span class="js-year-copy"></span>
+                            <a class="font-w600" href="/" target="_blank">Paybill.io</a> &copy; <span class="js-year-copy"></span>
                         </div>
                     </div>
                     <!-- END Copyright Info -->

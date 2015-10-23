@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # including as needed from django
+    'django.contrib.humanize',
     # Local APPS
     'pb',
 

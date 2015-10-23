@@ -223,5 +223,60 @@ function show_ok_message ( ok_message )
 
 }
 
-//get the 
+//JS specific to Confirm request page
 
+// // AJAX for Merchent Services Auth Required here
+
+// $(document).ready(function(){
+
+// 	istimeout = getParameterByName("timeout");
+
+// 	console.log(istimeout);
+
+// 	if (istimeout !== "true") {
+
+// 		var interval = setInterval(get_time_left, 1000);
+// 	};
+
+//  });
+
+//  function get_time_left(){
+
+//  	var request_id = $("#request-id").text();
+
+//      $.ajax({
+//          url: '/mercehenttimeleft/' + request_id + '/',
+//          dataType : "json",
+
+//          success: function(data) {
+//          	console.log(data)
+// 	         minleft = data["minleft"];
+// 	         secleft = data["secleft"];
+// 	         console.log(minleft);
+// 	         console.log(secleft);
+// 	         minsec  = minleft + ":" + secleft;
+//              $('#minsec').html(minsec);
+
+
+//              if (minleft == "0") {
+
+//              	console.log("we ran out of times");
+//              	window.location.href = "/bill-requests/";
+
+//              };
+//          }
+//      });
+//  }
+
+
+
+
+
+
+
+ function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}

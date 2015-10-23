@@ -1,0 +1,200 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+
+{% block title %} Merchent  Dashboard {% endblock %}
+
+{% block content %}
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+    <section class="content content-full content-boxed overflow-hidden">
+    <!-- Section Content -->
+        <div class="text-center">
+            <h1 class="h2 text-white push-10">Merchent Dashboard.</h1>
+            <h2 class="h5 text-white-op">Dashboard to your account below to access your Merchent Panel</h2>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Hero Content -->
+
+
+<!-- Content -->
+<div class="bg-white">
+    <section class="content content-boxed">
+    <!-- Section Content -->
+        <div class="row items-push push-50-t push-30">
+             <div class="row">
+                <div class="col-xs-6 col-sm-3" data-toggle="appear" data-class="animated fadeInDown">
+                    <a class="block block-bordered block-rounded block-link-hover3" href="javascript:void(0)">
+                        <div class="block-content block-content-full border-b text-center">
+                            <div class="item">
+                                <i class="si si-book-open text-amethyst"></i>
+                            </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-mini">
+                            <span class="font-w600 text-uppercase"><span class="badge badge-default pull-right">{{ bill_requests.count }}</span> Bill Requests</span>
+                        </div>
+                    </a>
+                </div>
+
+
+                <div class="col-xs-6 col-sm-3" data-toggle="appear" data-timeout="400" data-class="animated fadeInDown">
+                    <a class="block block-bordered block-rounded block-link-hover3" href="javascript:void(0)">
+                        <div class="block-content block-content-full border-b text-center">
+                            <div class="item">
+                                <i class="glyphicon glyphicon-transfer text-flat"></i>
+                            </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-mini">
+                            <span class="font-w600 text-uppercase"><span class="badge badge-default pull-right">{{ payments.count }}</span> Payments</span>
+                        </div>
+                    </a>
+                </div>
+
+
+
+
+                <div class="col-xs-6 col-sm-3" data-toggle="appear" data-timeout="600" data-class="animated fadeInDown">
+                    <a class="block block-bordered block-rounded block-link-hover3" href="javascript:void(0)">
+                        <div class="block-content block-content-full border-b text-center">
+                            <div class="item">
+                                <i class="fa fa-money text-smooth"></i>
+                            </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-mini">
+                            <span class="font-w600 text-uppercase"><span class="badge badge-success pull-right">{{ merchent.total_earnings|intcomma }} PKR</span> Total Earnings</span>
+                        </div>
+                    </a>
+                </div>
+
+
+
+
+
+
+                <div class="col-xs-6 col-sm-3" data-toggle="appear" data-timeout="200" data-class="animated fadeInDown">
+                    <a class="block block-bordered block-rounded block-link-hover3" href="javascript:void(0)">
+                        <div class="block-content block-content-full border-b text-center">
+                            <div class="item">
+                                <i class="si si-settings text-city"></i>
+                            </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-mini">
+                            <span class="font-w600 text-uppercase"><span class="badge badge-info pull-right">{{ merchent.contact_num }}</span>Settings</span>
+                        </div>
+                    </a>
+                </div>
+
+            </br>
+            </br>
+            </br>
+                <!-- Latest Request can be claimed -->
+                <div class="col-lg-6">
+                <!-- Bordered Table -->
+                    <div class="block">
+                        <div class="block-header">
+                            <h3 class="block-title">Latest Bill Requests</h3>
+                        </div>
+                        <div class="block-content">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th>Contact #</th>
+                                        <th class="hidden-xs">Billing ID</th>
+                                        <th class="hidden-xs">Amount <sup>PKR</sup></th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for request in bill_requests %}
+                                    <tr>
+
+                                        <td class="text-center">{{ request.pk }}</td>
+
+                                        <td>{{ request.contact_num }}</td>
+                                        
+                                        <td>{{ request.bill_id_num }}</td>
+                                        
+                                        <td class="hidden-xs">
+                                            <span class="label label-info">{{ request.pkr_bill_amount|intcomma}}</span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="/claim/{{request.pk}}">
+                                                <button class="btn btn-xs btn-default" type="button" data-toggle="tooltip" title="" data-original-title="Claim and Process"><i class="fa fa-arrow-right"></i></button>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END Bordered Table -->
+                </div> 
+                <!-- End of Col6 div -->
+                <!-- End of Latest Request -->
+
+
+
+                <!-- Completed Requests by Logged in User -->
+                <div class="col-lg-6">
+                <!-- Bordered Table -->
+                    <div class="block">
+                        <div class="block-header">
+                            <h3 class="block-title">Completed Bill Requests</h3>
+                        </div>
+                        <div class="block-content">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th>Contact #</th>
+                                        <th class="hidden-xs">Billing ID</th>
+                                        <th class="hidden-xs">Amount <sup>PKR</sup></th>
+                                        <th class="text-center">TXID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for request in completed_requests %}
+                                    <tr>
+
+                                        <td class="text-center">{{ request.pk }}</td>
+
+                                        <td>{{ request.contact_num }}</td>
+                                        
+                                        <td>{{ request.bill_id_num }}</td>
+                                        
+                                        <td class="hidden-xs">
+                                            <span class="label label-info">{{ request.pkr_bill_amount|intcomma}}</span>
+                                        </td>
+                                        
+                                        <td>
+                                            <span class="label label-success">{{ request.confirmation_txid}}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END Bordered Table -->
+                </div> 
+                <!-- End of Col6 div -->
+                <!-- End of Completed Requests -->
+
+
+            </div>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Content -->
+{% endblock %}
