@@ -1,0 +1,132 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+
+{% block title %} Confirm Bill Request {{ request.pk }}{% endblock %}
+
+{% block content %}
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+    <section class="content content-full content-boxed overflow-hidden">
+    <!-- Section Content -->
+        <div class=" text-center">
+            <h1 class="h2 text-white push-10">Payment History</h1>
+            <h2 class="h5 text-white-op">Most Recent Payment History can be Accessed Below</h2>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Hero Content -->
+
+
+<!-- Content -->
+<div class="bg-white">
+    <section class="content content-boxed">
+    <!-- Section Content -->
+        <div class="row items-push push-50-t push-30">
+
+            <div class="col-lg-8">
+
+                <!-- Bordered Table -->
+
+                <div class="block">
+                        <div class="block-content">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th>Date & Time</th>
+                                        <th class="hidden-xs">Method</th>
+                                        <th class="hidden-xs">Message</th>
+                                        <th class="hidden-xs">Amount <sup>PKR</sup></th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for payment in payments %}
+                                    <tr>
+
+                                        <td class="text-center">{{ payment.pk }}</td>
+
+                                        <td>{{ payment.date_time }}</td>
+                                        
+                                        <td>{{ payment.payment_method }}</td>
+
+                                        <td>{{ payment.error_message }}</td>
+                                        
+                                        <td class="hidden-xs">
+                                            <span class="label label-info">{{ payment.payment_amount|intcomma}}</span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if payment.ispaid == True %}
+                                                <span class="label label-success">Paid</span>
+                                                {% else %}
+                                                <span class="label label-warning">Processing</span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                <!-- END Bordered Table -->
+            </div>
+
+
+
+            <div class="col-lg-4">
+                <!-- Log In Form -->
+            </br>
+        
+                <form class="form-horizontal" id="payment_form" method="post" action="/createpayment/">
+                
+                {% csrf_token %}
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="form-material form-material-primary">
+                                    <input class="form-control" type="text" id="requestamount" name="requestamount" placeholder="less then {{ merchent.balance_available }}">
+                                    <label for="requestamount">Request Amount</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="form-material form-material-primary">
+                                    <input class="form-control" type="text" id="paymentmethod" name="paymentmethod" placeholder="BTC, Cash etc">
+                                    <label for="paymentmethod">Payment Method</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 ">
+                                <button class="btn btn-block btn-primary" type="submit"><i class="fa fa-arrow-right pull-right"></i> Request Payment</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+                <!-- END Log In Form -->
+
+                    
+            </div>
+        
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Content -->
+{% endblock %}

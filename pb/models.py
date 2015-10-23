@@ -28,8 +28,14 @@ class Merchent(models.Model):
 	is_admin_blocked = 	models.BooleanField(default=False)
 	# --- ID number provided by billing company
 	billing_id_number = models.CharField(max_length=128)
-	# --- Balance Earned
+	# --- Balance Earned in total ever on our site
 	total_earnings = models.IntegerField(default=0)
+	# --- Balance available to widthdraw
+	balance_available = models.IntegerField(default=0)
+
+	def __str__(self):
+		# get user by merchent
+		return self.user.username
 
 
 # Requests Model to Store Requests Mostly refered as bill request
@@ -75,6 +81,9 @@ class Request(models.Model):
 	# --- who claims the Bill Request --- #
 	claimer = models.ForeignKey(Merchent,default="1")
 
+	def __str__(self):
+		return str(self.pk)
+
 
 
 
@@ -87,13 +96,13 @@ class Payment(models.Model):
 	# --- The merchent to whom the payment belongs (ONE TO many to Merchents)
 	merchent = models.ForeignKey(Merchent)
 	# --- Payment Status (Error, Pending, onHold, Paid )
-	payment_status = models.CharField(max_length=128)
+	ispaid = models.BooleanField(default=False)
 	# --- Payment amount
 	payment_amount = models.IntegerField(default=0)
 	# --- Paid via (BTC or Cash)
 	payment_method = models.CharField(max_length=128)
 	# --- Error Message
-	error_message = models.TextField(default="Payment Authorized No Error Messages")
+	error_message = models.TextField(default="None")
 
 
 class Company(models.Model):

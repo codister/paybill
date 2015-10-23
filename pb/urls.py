@@ -11,6 +11,7 @@ urlpatterns = patterns('',
         # Merchent Section
         url(r'^register/$', views.register, name='register'),
         url(r'^login/$', views.login_user, name='login_user'),
+        # Merchent Bill Processing Requests
         url(r'claim/(?P<request_id>[0-9]+)/$', views.claim_request, name='claim_request'),
         url(r'confirm-request/(?P<request_id>[0-9]+)/$', views.confirm_request, name='confirm_request'),
         url(r'mercehenttimeleft/(?P<request_id>[0-9]+)/$', views.merchent_time_left, name='merchent_time_left'),
@@ -18,6 +19,9 @@ urlpatterns = patterns('',
         url(r'completed-requests/$', views.merchent_completed_requests, name='merchent_completed_requests'),
         url(r'claimed-requests/$', views.merchent_claimed_requests, name='merchent_claimed_requests'),
         url(r'dashboard/$', views.merchent_dashboard, name='merchent_dashboard'),
+        # Merchent Payments
+        url(r'payments/$', views.all_payments, name='all_payments'),
+        url(r'createpayment/$', views.create_payment, name='create_payment'),
 
         # Ajax for front-end user who submits bill request! 
         url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),

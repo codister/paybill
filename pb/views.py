@@ -286,9 +286,74 @@ def merchent_dashboard(request):
 # --- PAYMENTS --- #
 
 # .. Get the payments history
+def all_merchent_payments(request):
+    return HttpResponse("Return Payments here")
+
 # .. Request Payment create payment object
+
+def create_payment(request):
+    if request.method == 'POST':
+        # get the data from post request like payment amount request , and payment method
+        raw_amount_requested = request.POST.get('requestamount')
+        payment_method  = request.POST.get('paymentmethod')
+        amount_requested = int(raw_amount_requested)
+        #Todo Validated the Post data from injections etc clean it off
+
+        # Available Balance
+        logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+
+        if amount_requested < logged_in_merchent.balance_available:
+            # ok go ahead user have requested from available
+            # Create a Payment request
+            payment = Payment.objects.create(
+                payment_amount = amount_requested,
+                payment_method= payment_method,
+                merchent=logged_in_merchent
+
+                )
+            # - the request amount from available balance
+            logged_in_merchent.balance_available = logged_in_merchent.balance_available - amount_requested
+            # save the changes to merchent model
+            logged_in_merchent.save()
+
+            # Debug 
+            print(payment)
+
+            #return the response
+            context = {
+
+                "error" : "false",
+                "payment_id" : payment.pk,
+                "payment_amount" : payment.payment_amount
+            }
+
+            #debug
+            print(context)
+
+            return HttpResponseRedirect("/payments")
+        else:
+            return HttpResponseRedirect("/")
+
 # .. Get the payment by pk
 
+def payment(request, request_id):
+    return HttpResponse(request_id)
+
+
+
+def all_payments(request):
+
+    payments = Payment.objects.all()
+    logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+
+    context = {
+
+        "payments" : payments,
+        "merchent" : logged_in_merchent 
+
+    }
+
+    return render(request, "pb/all_payments.html", context)
 # --- Track Transfers --- #
 
 
