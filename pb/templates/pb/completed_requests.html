@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+
+{% block title %} Completed Bill Requests {% endblock %}
+
+{% block content %}
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+    <section class="content content-full content-boxed overflow-hidden">
+    <!-- Section Content -->
+        <div class="text-center">
+            <h1 class="h2 text-white push-10">Completed Bill Requests</h1>
+            <h2 class="h5 text-white-op">Requests you have Processed</h2>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Hero Content -->
+
+
+<!-- Content -->
+<div class="bg-white">
+    <section class="content content-boxed">
+    <!-- Section Content -->
+        <div class="row items-push push-50-t push-30">
+                <div class="col-lg-6 col-md-offset-3">
+                    <!-- Bordered Table -->
+                    <div class="block">
+                        <div class="block-header">
+                            <h3 class="block-title">Completed Requests</h3>
+                        </div>
+                        <div class="block-content">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th>Contact #</th>
+                                        <th class="hidden-xs">Billing ID</th>
+                                        <th class="hidden-xs">Amount <sup>PKR</sup></th>
+                                        <th class="text-center">TXID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for request in bill_requests %}
+                                    <tr>
+
+                                        <td class="text-center">{{ request.pk }}</td>
+
+                                        <td>{{ request.contact_num }}</td>
+                                        
+                                        <td>{{ request.bill_id_num }}</td>
+                                        
+                                        <td class="hidden-xs">
+                                            <span class="label label-info">{{ request.pkr_bill_amount|intcomma}}</span>
+                                        </td>
+
+                                        <td>
+                                            <span class="label label-success">{{ request.confirmation_txid}}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END Bordered Table -->
+
+
+                    <!-- PAGINATION NEEDS TO TESTED TODO -->
+
+                    <ul class="pagination pagination-sm">
+
+                        {% if bill_requests.has_previous %}
+                        <li class="disabled">
+                            <a href="?page={{ bill_requests.previous_page_number }}"><i class="fa fa-angle-double-left"></i></a>
+                        </li>
+                        {% endif %}
+
+
+                        {% for page_num in bill_requests.page_range %}
+
+                        <li class="active">
+                            <a href="javascript:void(0)">1</a>
+                        </li>
+
+                        {% endfor %}
+
+
+
+                        {% if bill_requests.has_next %}
+                        <li>
+                            <a href="?page={{ bill_requests.next_page_number }}"><i class="fa fa-angle-double-right"></i></a>
+                        </li>
+                        {% endif %}
+
+
+                    </ul>
+                    <!-- END PAGINATION -->
+
+                </div>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Content -->
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+
+{% block title %} Confirm Bill Request {{ request.pk }}{% endblock %}
+
+{% block content %}
+
+
+<!-- Hero Content -->
+<div class="bg-primary-dark-op">
+    <section class="content content-full content-boxed overflow-hidden">
+    <!-- Section Content -->
+        <div class="push-100-t push-50 text-center">
+            <h1 class="h2 text-white push-10">Confirm Bill Request "{{ request.pk }}"</h1>
+            <h2 class="h5 text-white-op">Mark the request #{{ request.pk }} as Completed by Providing the TX ID for confirmation</h2>
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Hero Content -->
+
+
+<!-- Content -->
+<div class="bg-white">
+    <section class="content content-boxed">
+    <!-- Section Content -->
+        <div class="row items-push push-50-t push-30">
+
+            <div class="col-lg-6">
+
+                <!-- Bordered Table -->
+                <div class="block">
+
+                        <div class="block-header">
+                            {% if request.is_completed == False %}
+                            <div class="block-options">
+                                Timeleft to Process : <code id="minsec"><strong></strong></code>
+                            </div>
+                            {% endif %}
+                            <h3 class="block-title">Bill Information</h3>
+                        </div>
+                    <div class="block-content">
+                        <table class="table table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td>Request ID</td>
+                                    <td class="hidden-xs">
+                                        <span id="request-id" class="label label-info">{{ request.pk }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bill Type</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-warning">{{ request.bill_type }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Billing Company</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-info"> {{ request.billing_company }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bill Due</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-success"> {{ request.pkr_bill_amount }} PKR</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bill Payer Number</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-success"> {{ request.contact_num }} </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Consumer Number / Billing ID</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-primary"> {{ request.bill_id_num }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Time you Claimed this Request</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-primary"> {{ request.time_claimed_on }}</span>
+                                    </td>
+                                </tr>
+
+                                {% if request.is_completed == True %}
+
+                                    <tr>
+                                    <td>Confirmation TXID</td>
+                                    <td class="hidden-xs">
+                                        <span class="label label-primary"> {{ request.confirmation_txid }}</span>
+                                    </td>
+                                </tr>
+
+                                {% endif %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Bordered Table -->
+            </div>
+
+
+
+            {% if request.is_completed == False%}
+            <div class="col-lg-6">
+                <!-- Log In Form -->
+                <form class="form-horizontal" id="login_form" method="post" action="/confirm-request/{{ request.pk }}/">
+                
+                {% csrf_token %}
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="form-material form-material-primary">
+                                    <input class="form-control" type="text" id="txid" name="txid" placeholder="Enter Transaction ID here [Optional]">
+                                    <label for="txid">TX ID :</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-8 ">
+                                <button class="btn btn-block btn-primary" type="submit"><i class="fa fa-arrow-right pull-right"></i> Mark Completed</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+                <!-- END Log In Form -->
+
+                {% else %}
+
+                    </br>
+                    </br>   
+                    <div class="col-xs-6">
+                        <div class="alert alert-info alert-dismissable">
+                            
+                            <h3 class="font-w300 push-15"><i class="fa fa-check-circle fa-1x"></i> You have Processed this Bill</h3>
+                            <p>If you have any issues regarding this Bill Request please  <a class="alert-link" href="/contact.">contact us</a>!</p>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        
+        </div>
+    <!-- END Section Content -->
+    </section>
+</div>
+<!-- END Content -->
+{% endblock %}

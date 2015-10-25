@@ -9,6 +9,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from datetime import datetime, timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #Standard Import related to Python
 import json, time, requests
@@ -126,22 +127,15 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
 
-# --- DASHBOARD --- #
 
-# .. Get the Current logged in user
-# .. Get the Claimed Request which needs to be process by current logged in users
-# .. Get the Pending Request which need to be process and also exclude where isCLaimed attribute is True
-# .. Add Pagination for Bulk Records
-# .. 
-
-
-# --- PAYMENTS --- #
-
-# .. Get the payments history
-# .. Request Payment create payment object
-# .. Get the payment by pk
-
-# --- Track Transfers --- #
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    print("user was logged in and we logged him out")
+    logout(request)
+    
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/')
 
 # --- Requests --- #
 
@@ -151,72 +145,268 @@ def user_logout(request):
 ####                                             ####
 #####################################################
 
-
-# .. Get the request detail by request id
-def get_request(request, request_id):
-    # .. Get the record by request ID
-    req = get_object_or_404(Request, pk=request_id)
-    
-    # .. Get the Status of request
-    if req.is_completed:
-
-        jsonrecord = json.dump(req)
-        
-        # .. Code it to Json and return
-        return HttpResponse(jsonrecord)
-
+# --- Requests --- #
 
 # .. # .. /claim-request/<request_id>
 # .. Claim a request to process by passing the req id
-# .. Make sure if the request_token is set to false 
-# .. check if user is activated and approved
-# .. add or update the request claimed time field in database
-# .. update the time remaining to process a request set call the calculate functions
-# .. redirect to confim request completed page /request_confirm/<request_id>
+def claim_request(request, request_id):
+    # get the object
+    bill_request = Request.objects.get(pk=request_id)
+    # .. Make sure if the request_token is set to false 
+    if bill_request.request_token == True:
+    # .. add or update the request claimed time field in database
+        bill_request.time_claimed_on = datetime.now(timezone.utc)
+        logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+        bill_request.claimer = logged_in_merchent
+        bill_request.request_token = False
+        bill_request.save()
+        # .. redirect to confim request completed page /request_confirm/<request_id>
+        redirect_url = "/confirm-request/" + str(bill_request.pk)
+        return HttpResponseRedirect(redirect_url)
+    else:
+        return HttpResponse("not available for claim")
 
 
-
-# .. /request_confirm/<request_id>
+# .. /confirm-request/<request_id>
 # .. Mark the request completed by providing the confirmation number
-# .. Check if the ID Confirmation is provided
-# .. check if the request if claimed by logged in user
-# .. check if the request has a request token True # if not then tell user time expired to process this request claim it again from claiming section to process it again
-# .. if this all sounds great means true then we go ahead
-# .. mark the request completed in DB field and notify the user by email
+def confirm_request(request, request_id):
+    # check if we got the form submitted or get request
+    if request.method == 'POST':
+        txid = request.POST.get('txid')
+        # Validate this string before putting it in the database
+        ## todo
+        # get the object by id
+        bill_request = Request.objects.get(pk=request_id)
+        # save it in database
+        bill_request.confirmation_txid = txid
+        bill_request.is_completed = True
+        # save it in DB
+        bill_request.save()
+        # render the form
+        # send email todo
+        context = {
+            
+            "request" : bill_request,
+            "messagetype" : "success"
+        }
+        return render(request, 'pb/confirm_request.html', context )
+    else:
+        # display the request information
+
+        bill_request = Request.objects.get(pk=request_id)
+
+        print("Request Status is : ", bill_request.is_completed  )
+
+        # get the request information
+        context = {
+
+            "request" : bill_request
+        
+        }
+        return render(request, 'pb/confirm_request.html', context )
 
 
 
+# Pool of Bill Request shown all Merchents so they can process requests
+def bill_requests(request):
+    # get all the objects with respect to unclaimed and have token to setten to false
+    bill_requests_list = Request.objects.all().filter(request_token=True, is_completed=False)
 
-# .. /requests-completed/
-# .. Request completed by logged in user
-# .. Get the logged in user by request object
-# .. Query the ORM by saying select from model request where user id is user logged in
-# .. Return the request completed by logged in to template called completed request
+    paginator = Paginator(bill_requests_list, 10) # Show 10 bills per page
 
+    page = request.GET.get('page')
+    try:
+        bill_requests = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        bill_requests = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        bill_requests = paginator.page(paginator.num_pages)
 
-# .. /requests-claimed/
-# .. Return the the request claimed and not yet completed of logged in merchent user
-# .. Get the logged in user
-# .. query the orm where user id is logged in user and request are claimed by current logged in user 
-# .. and are still pending and have request token True so that they know they can still process it
+    context = {
 
+        "bill_requests" : bill_requests 
 
+    }
 
-# .. /time-lef/<request_id> = AJAX expects a request id to get it's time left
-# .. Trigger this function every 30 mints to check time remaining to process request
-# .. if time is not greater then 30 mints from the time request claim then do nothing
-# .. else if time is greater then 30 mints from the time request was claim then expire
-# .. the token by changing the db field called request_token to False so
-
-
-
-# .. /search_request/<search_text>/
-# .. Get the request by their bill type
-# .. Search within bill types, companies, request id, email address, request phone
-# .. return the object got to template and render it no results found on template end by using count tag/filter
+    return render(request, "pb/latest_requests.html", context)
 
 
+# Claimed Un Processed Requests
+def merchent_claimed_requests(request):
+    bill_requests = Request.objects.all().filter(claimer_id=request.user.pk, is_completed=False)
 
+    context = {
+
+        "bill_requests" : bill_requests
+
+    }
+
+    return render(request, "pb/claimed_requests.html", context)
+    
+
+
+# Completed Requests by Logged in Merchent User
+def merchent_completed_requests(request):
+    bill_requests = Request.objects.all().filter(claimer_id=request.user.pk, is_completed=True)
+
+    context = {
+
+        "bill_requests" : bill_requests
+
+    }
+    
+    return render(request, "pb/completed_requests.html", context)
+
+
+
+# --- DASHBOARD --- #
+def merchent_dashboard(request):
+    bill_requests = Request.objects.all().filter(request_token=True, is_completed=False)
+    completed_requests = Request.objects.all().filter(claimer_id=request.user.pk, is_completed=True)
+    logged_in_merchent = Merchent.objects.get(pk=request.user.pk)
+
+    # GET payments for logged in merchent
+
+    payments = Payment.objects.all().filter(merchent_id=logged_in_merchent.pk)
+
+    context = {
+
+        "bill_requests" : bill_requests,
+        "completed_requests" : completed_requests,
+        "payments" : payments,
+        "merchent" : logged_in_merchent
+
+    }
+    
+    return render(request, "pb/merchent_dashboard.html", context)
+
+
+# --- PAYMENTS --- #
+
+# .. Get the payments history
+def all_merchent_payments(request):
+    return HttpResponse("Return Payments here")
+
+# .. Request Payment create payment object
+
+def create_payment(request):
+    if request.method == 'POST':
+        # get the data from post request like payment amount request , and payment method
+        raw_amount_requested = request.POST.get('requestamount')
+        payment_method  = request.POST.get('paymentmethod')
+        amount_requested = int(raw_amount_requested)
+        #Todo Validated the Post data from injections etc clean it off
+
+        # Available Balance
+        logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+
+        if amount_requested < logged_in_merchent.balance_available:
+            # ok go ahead user have requested from available
+            # Create a Payment request
+            payment = Payment.objects.create(
+                payment_amount = amount_requested,
+                payment_method= payment_method,
+                merchent=logged_in_merchent
+
+                )
+            # - the request amount from available balance
+            logged_in_merchent.balance_available = logged_in_merchent.balance_available - amount_requested
+            # save the changes to merchent model
+            logged_in_merchent.save()
+
+            # Debug 
+            print(payment)
+
+            #return the response
+            context = {
+
+                "error" : "false",
+                "payment_id" : payment.pk,
+                "payment_amount" : payment.payment_amount
+            }
+
+            #debug
+            print(context)
+
+            return HttpResponseRedirect("/payments")
+        else:
+            return HttpResponseRedirect("/")
+
+# .. Get the payment by pk
+
+def payment(request, request_id):
+    return HttpResponse(request_id)
+
+
+
+def all_payments(request):
+
+    payments = Payment.objects.all()
+    logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+
+    context = {
+
+        "payments" : payments,
+        "merchent" : logged_in_merchent 
+
+    }
+
+    return render(request, "pb/all_payments.html", context)
+# --- Track Transfers --- #
+
+
+#######################################
+####                               ####
+####  Merchent's API Interactions  ####
+####                               ####
+#######################################
+
+
+def merchent_time_left(request, request_id):
+    # Get the Bill request of which we need time remaining
+    bill_request = Request.objects.get(pk=request_id)
+    # Get the time right now server time
+    time_now = datetime.now(timezone.utc).replace(microsecond=0)
+    print(time_now)
+
+    # Get the time difference
+    request_claimed_time = bill_request.time_claimed_on.replace(microsecond=0)
+    print(request_claimed_time)
+    
+    # TimeDelta class base time difference between two results
+    time_difference = time_now - request_claimed_time 
+
+    # print the time right now in UTC
+
+    # print the time of request initiated
+    print("Time difference is : " , time_difference)
+
+    # Get the time difference in Minutes for more readable format
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Check if time ago is less in [30] minutes
+    if minutes < 30 :
+        timeleft_min = 30 - minutes
+        timeleft_sec = seconds
+    else:
+        timeleft_min = 0
+        bill_request.token = True
+        bill.request.claimer = Merchent.objects.get(pk=1)
+        bill_request.save()
+        timeleft_sec = seconds
+
+
+    response = {
+
+        "minleft" : timeleft_min, 
+        "secleft" : timeleft_sec
+    }
+
+    # Return Json encoded response 
+    return HttpResponse(json.dumps(response))
 
 
 #####################################################
@@ -242,6 +432,7 @@ def submit_request_data(request):
         contact_num = request.POST.get('contact_num')
         billing_company = request.POST.get('billing_company')
         email_address = request.POST.get('email_address')
+        billidnumber = request.POST.get('billidnumber')
 
         # Generate the bitfinex address and return to the user
         newly_generated_address = gen_deposit_address()
@@ -263,9 +454,11 @@ def submit_request_data(request):
             bill_type=bill_type,
             contact_num=contact_num, 
             billing_company=billing_company, 
+            bill_id_num=billidnumber,
             email_address=email_address, 
             btc_address=newly_generated_address,
             btc_amount=btc_amount_to_paid,
+            time_claimed_on=datetime.now(timezone.utc),
 
             )
 

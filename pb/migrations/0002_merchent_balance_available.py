@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pb', '0007_auto_20151014_1207'),
+        ('pb', '0001_initial'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='request',
-            name='btc_amount',
-            field=models.FloatField(default=0),
+        migrations.AddField(
+            model_name='merchent',
+            name='balance_available',
+            field=models.IntegerField(default=0),
         ),
     ]
