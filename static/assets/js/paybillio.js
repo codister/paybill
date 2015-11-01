@@ -223,6 +223,12 @@ function show_ok_message ( ok_message )
 
 }
 
+
+
+
+
+
+
 //JS specific to Confirm request page
 
 // // AJAX for Merchent Services Auth Required here
@@ -280,3 +286,14 @@ function show_ok_message ( ok_message )
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+
+
+
+
+
+
+
+
+for (var i = 0; i < urls_raw.length; i++) {
+	urls_raw[i]
+};
