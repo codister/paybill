@@ -43,8 +43,7 @@ INSTALLED_APPS = (
     # including as needed from django
     'django.contrib.humanize',
     # Local APPS
-    'pb',
-
+    'pb'
 )
 
 MIDDLEWARE_CLASSES = (
