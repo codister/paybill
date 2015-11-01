@@ -1,17 +1,20 @@
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from pb.models import Merchent, Request, Payment, Company
-from pb.forms import UserForm, MerchentForm
 from django.shortcuts import render, get_object_or_404
-from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-from datetime import datetime, timezone
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core import serializers
+from django.db.models import Q
+
+# App Specific Imports Self Made 
+from pb.forms import UserForm, MerchentForm
+from pb.models import Merchent, Request, Payment, Company
 
 #Standard Import related to Python
+from datetime import datetime, timezone
 import json, time, requests
 
 
@@ -334,13 +337,9 @@ def create_payment(request):
         else:
             return HttpResponseRedirect("/")
 
-# .. Get the payment by pk
-
-def payment(request, request_id):
-    return HttpResponse(request_id)
 
 
-
+# .. Get the payments by logged in user
 def all_payments(request):
 
     payments = Payment.objects.all()
@@ -354,7 +353,29 @@ def all_payments(request):
     }
 
     return render(request, "pb/all_payments.html", context)
-# --- Track Transfers --- #
+
+
+
+# Change logged in User_Merchent Password
+
+def change_password(request):
+    if request.POST:
+        new_password = request.POST.get("newpassword")
+        logged_in_user = User.objects.get(id=request.user.pk)
+        logged_in_user.set_password(new_password)
+        logged_in_user.save()
+
+        user = authenticate(username=logged_in_user.username, password=new_password)
+        # Login user again with new password
+        login(request, user)
+
+        # Perhaps Flashing a message would be helpful
+
+        return HttpResponseRedirect("/settings/password")
+    else:
+        return render(request, "change_password.html")
+
+
 
 
 #######################################
@@ -409,11 +430,38 @@ def merchent_time_left(request, request_id):
     return HttpResponse(json.dumps(response))
 
 
+
+
+
+
+
+
+
+# Track Bill Request Transfer
+
+def track_bill_request(request):
+    if request.method == 'POST':
+        bill_id = request.POST.get("billid")
+        # get the matching results
+        results = Request.objects.filter(Q(bill_id_num=bill_id) | Q(contact_num=bill_id) | Q(email_address=bill_id))
+        # Get the results in dict
+        context = { 
+
+        "bill_requests" : results,
+        "billid" : bill_id
+        }
+        return render (request, "pb/track_bill_results.html", context)
+    else:
+        return render (request, "pb/track_bill.html")
+
+
+
 #####################################################
 ####                                             ####
 ####  Front end User Request's API Interactions  ####
 ####                                             ####
 #####################################################
+
 
 
 @csrf_exempt

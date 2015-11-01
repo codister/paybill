@@ -22,8 +22,11 @@ urlpatterns = patterns('',
         # Merchent Payments
         url(r'payments/$', views.all_payments, name='all_payments'),
         url(r'createpayment/$', views.create_payment, name='create_payment'),
+        # Merchent Settings
+        url(r'settings/password/$', views.change_password, name='change_password'),
 
-        # Ajax for front-end user who submits bill request! 
+        # Ajax for front-end user who submits bill request!
+        url(r'^track/$', views.track_bill_request, name='track_bill_request'),
         url(r'^submitrequestdata/$', views.submit_request_data, name='submit_request_data'),
         url(r'getcompanies/(?P<bill_type>[-\w]+)/$', views.get_companies, name='get_companies'),
         url(r'timeleft/(?P<request_id>[0-9]+)/$', views.time_left_to_pay, name='time_left_to_pay'),
