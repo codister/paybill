@@ -288,12 +288,3 @@ function show_ok_message ( ok_message )
 }
 
 
-
-
-
-
-
-
-for (var i = 0; i < urls_raw.length; i++) {
-	urls_raw[i]
-};

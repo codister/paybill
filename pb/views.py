@@ -238,7 +238,8 @@ def bill_requests(request):
 
 # Claimed Un Processed Requests
 def merchent_claimed_requests(request):
-    bill_requests = Request.objects.all().filter(claimer_id=request.user.pk, is_completed=False)
+    logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
+    bill_requests = Request.objects.all().filter(claimer_id=logged_in_merchent.pk, is_completed=False)
 
     context = {
 
@@ -268,7 +269,7 @@ def merchent_completed_requests(request):
 def merchent_dashboard(request):
     bill_requests = Request.objects.all().filter(request_token=True, is_completed=False)
     completed_requests = Request.objects.all().filter(claimer_id=request.user.pk, is_completed=True)
-    logged_in_merchent = Merchent.objects.get(pk=request.user.pk)
+    logged_in_merchent = Merchent.objects.get(user_id=request.user.pk)
 
     # GET payments for logged in merchent
 
@@ -719,7 +720,7 @@ def gen_deposit_address():
 
     payloadObject = {
             'request':'/v1/deposit/new',
-            'nonce':str(time.time() * 1000000), #convert to string
+            'nonce':str(time.time() * 100000000000000000), #convert to string
             'method':'bitcoin',
             'wallet_name':'deposit',
             'renew':1
@@ -741,6 +742,6 @@ def gen_deposit_address():
     r = requests.get(bitfinexURL, data={}, headers=headers)
     bit_data = r.json()
 
-    print(bit_data)
+    print('Response from bitfinex API is :', bit_data)
 
     return bit_data['address']['address']
