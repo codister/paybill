@@ -744,4 +744,4 @@ def gen_deposit_address():
 
     print('Response from bitfinex API is :', bit_data)
 
-    return bit_data['address']['address']
+    return bit_data['address']
